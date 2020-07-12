@@ -19,11 +19,11 @@ public final class SpigotUtils {
         }
     }
 
-    public static String obc(String className) {
+    public static String obc(final String className) {
         return "org.bukkit.craftbukkit" + SERVER_PACKAGE_VERSION + className;
     }
 
-    public static Class<?> obcClass(String className) throws ClassNotFoundException {
+    public static Class<?> obcClass(final String className) throws ClassNotFoundException {
         return Class.forName(obc(className));
     }
 

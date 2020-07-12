@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissibleBase;
 
-public final class PlayerUnInjectPermissibleEvent extends Event {
+public class PlayerUnInjectPermissibleEvent extends Event {
 
     private final Player player;
 

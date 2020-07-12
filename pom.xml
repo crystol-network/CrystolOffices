@@ -29,10 +29,6 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <repository>
-            <id>tne-repo</id>
-            <url>https://maven.pkg.github.com/TheNewEconomy/packages</url>
-        </repository>
 
     </repositories>
 
@@ -49,12 +45,6 @@
             <artifactId>spigot-api</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.tnemc.TheNewConfigLibrary</groupId>
-            <artifactId>thenewconfiglibrary</artifactId>
-            <version>0.1.1.61</version>
         </dependency>
 
     </dependencies>
