@@ -10,23 +10,29 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class OfficesPlugin extends JavaPlugin {
 
+    //TODO: INSTANCE OF SERVICES OFFICES
     private ServerOffices serverOffices;
 
     @Override
     public void onEnable() {
 
+        //TODO: INSTANCE OF SERVICES OFFICES
         serverOffices = ServerOffices.getInstance();
 
+        //TODO: LOAD REGISTRED YML GROUPS
         serverOffices.getGroupLoader().loadGroups();
 
+        //TODO: REGISTER EVENTS
         Bukkit.getPluginManager().registerEvents(new InjectListener(), this);
 
+        //TODO: LOAD USER DATA AND INJECT CUSTOM PERMISSIBLE
         for (Player player : Bukkit.getOnlinePlayers()) {
 
             serverOffices.loadUser(player);
 
         }
 
+        //TODO: STARTER CUSTOM TAB
         final TabService tabService = serverOffices.getTabService();
         tabService.start(this, getServer());
         tabService.execute(new TabService.TabUpdate() {

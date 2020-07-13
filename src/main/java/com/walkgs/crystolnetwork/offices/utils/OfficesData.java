@@ -8,6 +8,8 @@ import java.util.List;
 @ConfigurationElement
 public final class OfficesData {
 
+    //TODO: THIS CONFIG YML CLASS
+
     private int rank;
     private String prefix;
     private String suffix;
