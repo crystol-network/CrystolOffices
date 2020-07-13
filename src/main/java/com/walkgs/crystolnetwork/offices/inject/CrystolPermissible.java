@@ -35,8 +35,13 @@ public final class CrystolPermissible extends PermissibleBase {
         return hasPermission(perm.getName());
     }
 
-    public void setOldPermissibleBase(PermissibleBase permissibleBase) { oldPermissibleBase = permissibleBase; }
-    public PermissibleBase getOldPermissibleBase() { return oldPermissibleBase; }
+    public void setOldPermissibleBase(PermissibleBase permissibleBase) {
+        oldPermissibleBase = permissibleBase;
+    }
+
+    public PermissibleBase getOldPermissibleBase() {
+        return oldPermissibleBase;
+    }
 
     public Player getPlayer() {
         return player;

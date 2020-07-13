@@ -10,7 +10,8 @@ import java.util.List;
 
 public final class PermissibleInjector {
 
-    private PermissibleInjector() {}
+    private PermissibleInjector() {
+    }
 
     private static final Field ENTITY_PERMISSIBLE_FIELD;
     private static final Field PERMISSIBLE_ATTACHMENTS_FIELD;
@@ -28,10 +29,12 @@ public final class PermissibleInjector {
             //TODO GET ATTACHMENTS FIELD AND SET ACESS
             PERMISSIBLE_ATTACHMENTS_FIELD = PermissibleBase.class.getDeclaredField("attachments");
             PERMISSIBLE_ATTACHMENTS_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) { throw new ExceptionInInitializerError(e); }
+        } catch (NoSuchFieldException e) {
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
-    public static Permissible inject(Player player, CrystolPermissible permissible){
+    public static Permissible inject(Player player, CrystolPermissible permissible) {
         PermissibleBase oldPermissible = null;
         try {
             //TODO: GET OLD PERMISSIBLE
@@ -41,11 +44,13 @@ public final class PermissibleInjector {
                 ((List) PERMISSIBLE_ATTACHMENTS_FIELD.get(permissible)).addAll((List) PERMISSIBLE_ATTACHMENTS_FIELD.get(oldPermissible));
             //TODO: SET NEW PERMISSIBLE
             ENTITY_PERMISSIBLE_FIELD.set(player, permissible);
-        } catch (IllegalAccessException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return oldPermissible;
     }
 
-    public static Permissible uninject(Player player){
+    public static Permissible uninject(Player player) {
         Permissible permissible = null;
         try {
             //TODO: GET OLD PERMISSIBLE
@@ -53,13 +58,19 @@ public final class PermissibleInjector {
             //TODO: SET DEFAULT PERMISSIBLE
             if (permissible != null)
                 ENTITY_PERMISSIBLE_FIELD.set(player, ((CrystolPermissible) permissible).getOldPermissibleBase());
-        } catch (IllegalAccessException e) { e.printStackTrace(); }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return permissible;
     }
 
-    public static PermissibleBase getPermissible(Player player){
+    public static PermissibleBase getPermissible(Player player) {
         PermissibleBase permissible = null;
-        try { permissible = (PermissibleBase) ENTITY_PERMISSIBLE_FIELD.get(player); } catch (IllegalAccessException e) { e.printStackTrace(); }
+        try {
+            permissible = (PermissibleBase) ENTITY_PERMISSIBLE_FIELD.get(player);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return permissible;
     }
 
@@ -69,7 +80,8 @@ public final class PermissibleInjector {
             Class<?> obcClass = SpigotUtils.obcClass(className);
             if (obcClass != null)
                 field = obcClass.getDeclaredField(fieldName);
-        } catch (ClassNotFoundException | NoSuchFieldException e) {}
+        } catch (ClassNotFoundException | NoSuchFieldException e) {
+        }
         return field;
     }
 

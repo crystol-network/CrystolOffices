@@ -16,7 +16,7 @@ public class PlayerInjectPermissibleEvent extends Event {
 
     private boolean cancelled = false;
 
-    public PlayerInjectPermissibleEvent(Player player, CrystolPermissible newPermissible, PermissibleBase oldPermissible){
+    public PlayerInjectPermissibleEvent(Player player, CrystolPermissible newPermissible, PermissibleBase oldPermissible) {
         this.player = player;
         this.newPermissible = newPermissible;
         this.oldPermissible = oldPermissible;
@@ -27,17 +27,29 @@ public class PlayerInjectPermissibleEvent extends Event {
         return this;
     }
 
-    public void setCancelled(boolean status) { cancelled = status; }
+    public void setCancelled(boolean status) {
+        cancelled = status;
+    }
 
-    public boolean isCancelled() { return cancelled; }
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-    public Player getPlayer() { return player; }
+    public Player getPlayer() {
+        return player;
+    }
 
-    public CrystolPermissible getNewPermissible() { return newPermissible; }
+    public CrystolPermissible getNewPermissible() {
+        return newPermissible;
+    }
 
-    public PermissibleBase getOldPermissible() { return oldPermissible; }
+    public PermissibleBase getOldPermissible() {
+        return oldPermissible;
+    }
 
     @Override
-    public HandlerList getHandlers() { return new HandlerList(); }
+    public HandlerList getHandlers() {
+        return new HandlerList();
+    }
 
 }

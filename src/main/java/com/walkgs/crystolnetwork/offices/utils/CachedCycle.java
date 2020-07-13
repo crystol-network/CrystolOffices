@@ -42,6 +42,7 @@ public final class CachedCycle {
         private void clear() {
             instances.clear();
         }
+
         private void clear(Plugin plugin) {
             instances.get(plugin).clear();
         }

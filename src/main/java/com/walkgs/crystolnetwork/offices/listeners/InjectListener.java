@@ -32,7 +32,7 @@ public final class InjectListener implements Listener {
             CrystolPermissible permissibleBase = (CrystolPermissible) injectedPermissibleBase;
 
             final PlayerUnInjectPermissibleEvent permissibleEvent = new PlayerUnInjectPermissibleEvent(player, permissibleBase.getOldPermissibleBase(), permissibleBase).call();
-            if (!permissibleEvent.isCancelled()){
+            if (!permissibleEvent.isCancelled()) {
                 //TODO: UNINJECT PERMISSIBLE
                 PermissibleInjector.uninject(player);
             }
