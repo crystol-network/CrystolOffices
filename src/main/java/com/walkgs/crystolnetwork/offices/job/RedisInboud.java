@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.job;
 
 import com.google.gson.Gson;
-import com.walkgs.crystolnetwork.offices.api.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.events.RedisMessageEvent;
 import com.walkgs.crystolnetwork.offices.events.RedisReceiveMessageEvent;
 import redis.clients.jedis.JedisPubSub;

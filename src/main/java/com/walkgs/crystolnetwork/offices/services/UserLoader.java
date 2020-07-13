@@ -26,9 +26,14 @@ public class UserLoader {
         return permissionsCache.get(uuid);
     }
 
-    public void putIfNotExists(final UUID uuid, final UserManager userManager) {
-        if (!permissionsCache.containsKey(uuid))
-            permissionsCache.put(uuid, userManager);
+    public boolean hasLoaded(final UUID uuid) {
+        return permissionsCache.containsKey(uuid);
+    }
+
+    public boolean loadIfNotLoaded(final UUID uuid, final UserManager userManager) {
+        if (hasLoaded(uuid)) return false;
+        permissionsCache.put(uuid, userManager);
+        return true;
     }
 
     public Plugin getPlugin() {

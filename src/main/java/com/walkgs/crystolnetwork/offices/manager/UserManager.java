@@ -165,7 +165,7 @@ public class UserManager implements Serializable, Cloneable {
         return groups;
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 

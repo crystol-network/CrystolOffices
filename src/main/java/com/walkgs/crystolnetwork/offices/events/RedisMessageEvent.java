@@ -37,9 +37,14 @@ public class RedisMessageEvent extends Event {
         return receivedData;
     }
 
-    @Override
+    private static HandlerList handlerList = new HandlerList();
+
     public HandlerList getHandlers() {
-        return new HandlerList();
+        return handlerList;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlerList;
     }
 
 }

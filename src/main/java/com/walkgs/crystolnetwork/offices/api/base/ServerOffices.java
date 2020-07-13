@@ -1,23 +1,15 @@
-package com.walkgs.crystolnetwork.offices.api;
+package com.walkgs.crystolnetwork.offices.api.base;
 
 import com.walkgs.crystolnetwork.offices.OfficesPlugin;
-import com.walkgs.crystolnetwork.offices.events.PlayerInjectPermissibleEvent;
-import com.walkgs.crystolnetwork.offices.inject.CrystolPermissible;
-import com.walkgs.crystolnetwork.offices.inject.PermissibleInjector;
+import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
 import com.walkgs.crystolnetwork.offices.job.RedisJob;
-import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.security.SecurityService;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
 import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import com.walkgs.crystolnetwork.offices.services.TabService;
 import com.walkgs.crystolnetwork.offices.services.UserLoader;
 import com.walkgs.crystolnetwork.offices.utils.CachedCycle;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.plugin.Plugin;
-
-import java.util.UUID;
 
 public class ServerOffices {
 
@@ -40,6 +32,7 @@ public class ServerOffices {
     private final SecurityService securityService;
     private final NetworkService networkService;
     private final RedisJob redisJob;
+    private final PlayerPermission playerPermission;
 
     private String serverName = "defaultServer";
     private String channelName = "ChannelMessageOf-defaultServer";
@@ -54,15 +47,16 @@ public class ServerOffices {
         networkService = new NetworkService(securityService.getCredential("redis"));
 
         redisJob = new RedisJob(this);
+        playerPermission = new PlayerPermission(this);
     }
 
-    public UserManager getUser(Player player) {
-        return getUser(player.getUniqueId());
-    }
+    //public UserManager getUser(Player player) {
+    //   return getUser(player.getUniqueId());
+    //}
 
-    public UserManager getUser(UUID uuid) {
-        return userLoader.get(uuid);
-    }
+    //public UserManager getUser(UUID uuid) {
+    //   return userLoader.get(uuid);
+    //}
 
     public void setServerName(String serverName) {
         this.channelName = "ChannelMessageOf-" + serverName;
@@ -89,34 +83,38 @@ public class ServerOffices {
         return redisJob;
     }
 
-    public void loadUser(final OfflinePlayer player) {
-        loadUser(player.getUniqueId());
+    public PlayerPermission getPlayerPermission() {
+        return playerPermission;
     }
 
-    public void loadUser(final UUID uuid) {
+    //public void loadUser(final OfflinePlayer player) {
+    //    loadUser(player.getUniqueId());
+    //}
 
-        userLoader.putIfNotExists(uuid, new UserManager(plugin, uuid));
-        getUser(uuid).addGroups(
-                getGroupLoader().getDefaultGroups()
-        );
+    //public void loadUser(final UUID uuid) {
 
-    }
+    //    userLoader.putIfNotExists(uuid, new UserManager(plugin, uuid));
+    //    getUser(uuid).addGroups(
+    //            getGroupLoader().getDefaultGroups()
+    //    );
 
-    public void injectInUser(final Player player) {
+    //}
 
-        final PermissibleBase permissibleBase = PermissibleInjector.getPermissible(player);
-        if (permissibleBase != null) {
+    //public void injectInUser(final Player player) {
 
-            final CrystolPermissible newPermissibleBase = new CrystolPermissible(player);
-            newPermissibleBase.setOldPermissibleBase(permissibleBase);
+    //    final PermissibleBase permissibleBase = PermissibleInjector.getPermissible(player);
+    //    if (permissibleBase != null) {
 
-            final PlayerInjectPermissibleEvent permissibleEvent = new PlayerInjectPermissibleEvent(player, newPermissibleBase, permissibleBase).call();
-            if (!permissibleEvent.isCancelled()) {
-                PermissibleInjector.inject(player, permissibleEvent.getNewPermissible());
-            }
-        }
+    //        final CrystolPermissible newPermissibleBase = new CrystolPermissible(player);
+    //        newPermissibleBase.setOldPermissibleBase(permissibleBase);
 
-    }
+    //        final PlayerInjectPermissibleEvent permissibleEvent = new PlayerInjectPermissibleEvent(player, newPermissibleBase, permissibleBase).call();
+    //        if (!permissibleEvent.isCancelled()) {
+    //           PermissibleInjector.inject(player, permissibleEvent.getNewPermissible());
+    //        }
+    //    }
+
+    //}
 
     public TabService getTabService() {
         return TabService.getInstance();

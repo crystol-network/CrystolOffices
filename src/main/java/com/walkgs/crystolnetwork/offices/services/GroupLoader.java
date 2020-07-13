@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.services;
 
 
-import com.walkgs.crystolnetwork.offices.api.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.utils.OfficesConfig;
 import com.walkgs.crystolnetwork.offices.utils.OfficesData;
 import org.bukkit.Bukkit;
@@ -9,7 +9,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +26,23 @@ public class GroupLoader {
         this.plugin = plugin;
     }
 
-    private final LinkedList<GroupPermission> groups = new LinkedList<>();
+    private final Map<String, GroupPermission> groups = new LinkedHashMap();
 
     public List<GroupPermission> getDefaultGroups() {
         final List<GroupPermission> groups = new ArrayList<>();
-        for (GroupPermission group : this.groups) {
+        for (GroupPermission group : this.groups.values()) {
             if (group.isDefault())
                 groups.add(group);
         }
         return groups;
+    }
+
+    public GroupPermission getGroup(String name) {
+        return groups.get(name);
+    }
+
+    public boolean existsGroup(String name) {
+        return groups.containsKey(name);
     }
 
     public boolean loadGroups() {
@@ -72,7 +80,7 @@ public class GroupLoader {
                     }
             }
 
-            this.groups.add(groupPermission);
+            this.groups.put(groupPermission.getName(), groupPermission);
 
         }
 

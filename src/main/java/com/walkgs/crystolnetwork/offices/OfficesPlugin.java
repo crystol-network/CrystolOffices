@@ -1,9 +1,10 @@
 package com.walkgs.crystolnetwork.offices;
 
-import com.walkgs.crystolnetwork.offices.api.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
+import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.job.RedisJob;
-import com.walkgs.crystolnetwork.offices.job.RedisSender;
 import com.walkgs.crystolnetwork.offices.listeners.InjectListener;
+import com.walkgs.crystolnetwork.offices.listeners.RedisListener;
 import com.walkgs.crystolnetwork.offices.services.GroupPermission;
 import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import com.walkgs.crystolnetwork.offices.services.TabService;
@@ -25,14 +26,18 @@ public class OfficesPlugin extends JavaPlugin {
         if (serverOffices.getGroupLoader().loadGroups()) {
 
             getServer().getPluginManager().registerEvents(new InjectListener(), this);
+            getServer().getPluginManager().registerEvents(new RedisListener(), this);
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                serverOffices.loadUser(player);
-                serverOffices.injectInUser(player);
-            }
+            final PlayerPermission playerPermission = serverOffices.getPlayerPermission();
 
             final RedisJob redisJob = serverOffices.getRedisJob();
             redisJob.start();
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                final PlayerPermission.UserData user = playerPermission.getUser(player);
+                user.load();
+                user.inject();
+            }
 
             final TabService tabService = serverOffices.getTabService();
             tabService.start(this, getServer());
@@ -41,15 +46,10 @@ public class OfficesPlugin extends JavaPlugin {
                 @Override
                 public void onUpdate(TabService.TabFactory tabFactory) {
                     final Player player = tabFactory.getPlayer();
-                    final GroupPermission groupPermission = serverOffices.getUser(player).getLargestGroup();
+                    final PlayerPermission.UserData user = playerPermission.getUser(player);
+                    final GroupPermission groupPermission = user.getLargestGroup();
                     tabFactory.appendPrefix(groupPermission.getPrefix());
                     tabFactory.appendSuffix(groupPermission.getSuffix());
-
-                    RedisSender redisSender = new RedisSender(networkService);
-                    redisSender.add("FILHO DA PUTA ARROMBADO");
-                    redisSender.add("TESTE DOIS OTARIO");
-                    redisSender.send(serverOffices.getServerName());
-
                 }
 
             });

@@ -1,21 +1,24 @@
 package com.walkgs.crystolnetwork.offices.listeners;
 
-import com.walkgs.crystolnetwork.offices.api.ServerOffices;
-import com.walkgs.crystolnetwork.offices.events.PlayerUnInjectPermissibleEvent;
-import com.walkgs.crystolnetwork.offices.inject.CrystolPermissible;
-import com.walkgs.crystolnetwork.offices.inject.PermissibleInjector;
+import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
+import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.permissions.PermissibleBase;
 
 import java.util.UUID;
 
 public final class InjectListener implements Listener {
 
-    private final ServerOffices serverOffices = ServerOffices.getInstance();
+    private final ServerOffices serverOffices;
+    private final PlayerPermission playerPermission;
+
+    public InjectListener() {
+        this.serverOffices = ServerOffices.getInstance();
+        this.playerPermission = new PlayerPermission(serverOffices);
+    }
 
     @EventHandler
     public final void onJoin(final PlayerJoinEvent event) {
@@ -23,8 +26,11 @@ public final class InjectListener implements Listener {
         final Player player = event.getPlayer();
         final UUID uuid = player.getUniqueId();
 
-        serverOffices.loadUser(uuid);
-        serverOffices.injectInUser(player);
+        final PlayerPermission.UserData user = playerPermission.getUser(uuid);
+        user.load();
+        user.inject();
+
+        user.addGroup("example");
 
     }
 
@@ -32,19 +38,10 @@ public final class InjectListener implements Listener {
     public final void onQuit(final PlayerQuitEvent event) {
 
         final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
 
-        //TODO: GET CUSTOM PERMISSIBLE AND CALL EVENT
-        final PermissibleBase injectedPermissibleBase = PermissibleInjector.getPermissible(player);
-        if (injectedPermissibleBase != null) {
-
-            CrystolPermissible permissibleBase = (CrystolPermissible) injectedPermissibleBase;
-
-            final PlayerUnInjectPermissibleEvent permissibleEvent = new PlayerUnInjectPermissibleEvent(player, permissibleBase.getOldPermissibleBase(), permissibleBase).call();
-            if (!permissibleEvent.isCancelled()) {
-                //TODO: UNINJECT PERMISSIBLE
-                PermissibleInjector.uninject(player);
-            }
-        }
+        final PlayerPermission.UserData user = playerPermission.getUser(uuid);
+        user.uninject();
 
     }
 

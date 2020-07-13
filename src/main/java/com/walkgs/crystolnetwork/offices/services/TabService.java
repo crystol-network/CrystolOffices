@@ -1,7 +1,8 @@
 package com.walkgs.crystolnetwork.offices.services;
 
 import com.walkgs.crystolnetwork.offices.OfficesPlugin;
-import com.walkgs.crystolnetwork.offices.api.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
+import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.utils.CachedCycle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -118,7 +119,7 @@ public class TabService {
     }
 
     public void start(Plugin plugin, Server server) {
-
+        final PlayerPermission playerPermission = serverOffices.getPlayerPermission();
         server.getScheduler().runTaskTimer(plugin, () -> {
             for (final Player player : Bukkit.getOnlinePlayers()) {
 
@@ -128,13 +129,16 @@ public class TabService {
 
                 for (final Player tabPlayer : Bukkit.getOnlinePlayers()) {
 
+                    final PlayerPermission.UserData user = playerPermission.getUser(tabPlayer);
+
                     //TODO: MAKE TAB FACTORY
+
                     final TabFactory tabFactory = new TabFactory(player);
                     for (TabUpdate tabUpdate : updateList)
                         tabUpdate.onUpdate(tabFactory);
                     //TODO: GET TAB DATA
                     final String uuidString = tabPlayer.getUniqueId().toString().replace("-", "").substring(0, 15);
-                    final GroupPermission groupPermission = serverOffices.getUser(tabPlayer).getLargestGroup();
+                    final GroupPermission groupPermission = user.getLargestGroup();
                     final String teamName = chars[groupPermission.getRank()] + uuidString;
                     Team team = scoreboard.getTeam(teamName);
                     if (team == null)

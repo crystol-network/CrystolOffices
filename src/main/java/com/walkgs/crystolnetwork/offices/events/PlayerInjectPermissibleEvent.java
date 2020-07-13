@@ -47,9 +47,14 @@ public class PlayerInjectPermissibleEvent extends Event {
         return oldPermissible;
     }
 
-    @Override
+    private static HandlerList handlerList = new HandlerList();
+
     public HandlerList getHandlers() {
-        return new HandlerList();
+        return handlerList;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlerList;
     }
 
 }

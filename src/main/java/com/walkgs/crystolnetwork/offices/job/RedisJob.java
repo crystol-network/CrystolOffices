@@ -1,6 +1,6 @@
 package com.walkgs.crystolnetwork.offices.job;
 
-import com.walkgs.crystolnetwork.offices.api.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
