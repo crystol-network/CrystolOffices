@@ -1,24 +1,23 @@
 package com.walkgs.crystolnetwork.offices.manager;
 
 import com.walkgs.crystolnetwork.offices.services.GroupPermission;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class UserManager implements Serializable, Cloneable {
 
+    private static final List<GroupPermission> EMPTY_BUFFER = new LinkedList<>();
+
     private final Plugin plugin;
-    private final Player player;
+    private final UUID uuid;
 
-    private final LinkedList<GroupPermission> groups = new LinkedList<>();
+    private final List<GroupPermission> groups = new LinkedList<>();
 
-    public UserManager(final Plugin plugin, final Player player) {
-        this.player = player;
+    public UserManager(final Plugin plugin, final UUID uuid) {
+        this.uuid = uuid;
         this.plugin = plugin;
     }
 
@@ -26,23 +25,18 @@ public class UserManager implements Serializable, Cloneable {
         GroupPermission largestGroup = null;
 
         for (GroupPermission group : groups) {
-            if (largestGroup != null) {
-                if (group.getRank() < largestGroup.getRank())
-                    largestGroup = group;
-            } else
-                largestGroup = group;
+            if (largestGroup != null && largestGroup.getRank() > group.getRank()) continue;
+            largestGroup = group;
         }
 
         return largestGroup;
     }
 
     public boolean addGroup(final GroupPermission groupPermission) {
-        boolean sucess = false;
-        if (!groups.contains(groupPermission)) {
-            groups.add(groupPermission);
-            sucess = true;
-        }
-        return sucess;
+        if (groups.contains(groupPermission)) return false;
+
+        groups.add(groupPermission);
+        return true;
     }
 
     public List<Boolean> addGroups(final GroupPermission... groupPermissions) {
@@ -51,18 +45,17 @@ public class UserManager implements Serializable, Cloneable {
 
     public List<Boolean> addGroups(final List<GroupPermission> groupPermissions) {
         final List<Boolean> sucess = new ArrayList<>();
-        for (GroupPermission groupPermission : groupPermissions)
+        for (GroupPermission groupPermission : groupPermissions) {
             sucess.add(addGroup(groupPermission));
+        }
         return sucess;
     }
 
     public boolean removeGroup(final GroupPermission groupPermission) {
-        boolean sucess = false;
-        if (groups.contains(groupPermission)) {
-            groups.remove(groupPermission);
-            sucess = true;
-        }
-        return sucess;
+        if (!groups.contains(groupPermission)) return false;
+
+        groups.remove(groupPermission);
+        return true;
     }
 
     public List<Boolean> removeGroups(final GroupPermission... groupPermissions) {
@@ -156,24 +149,28 @@ public class UserManager implements Serializable, Cloneable {
     }
 
     public List<GroupPermission> getGroupHighers(final GroupPermission groupPermission) {
-        List<GroupPermission> groups = new ArrayList<>();
+        if (groupPermission == null) return EMPTY_BUFFER;
 
-        if (groupPermission != null) {
-            for (GroupPermission group : groups) {
-                if (group.getRank() < groupPermission.getRank())
-                    groups.add(group);
-            }
+        List<GroupPermission> groups = new LinkedList<>();
+
+        for (GroupPermission group : groups) {
+            if (group.getRank() < groupPermission.getRank())
+                groups.add(group);
         }
 
         return groups;
     }
 
-    public LinkedList<GroupPermission> getGroups() {
+    public List<GroupPermission> getGroups() {
         return groups;
     }
 
-    public Player getPlayer() {
-        return player;
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public OfflinePlayer getPlayer() {
+        return plugin.getServer().getOfflinePlayer(uuid);
     }
 
     public Plugin getPlugin() {

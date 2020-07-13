@@ -151,7 +151,6 @@ public class TabService {
                     team.setSuffix(ChatColor.translateAlternateColorCodes('&', suffix));
 
                     team.addPlayer(tabPlayer);
-
                 }
 
             }

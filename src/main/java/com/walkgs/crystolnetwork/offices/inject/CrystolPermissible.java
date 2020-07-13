@@ -10,7 +10,7 @@ public final class CrystolPermissible extends PermissibleBase {
 
     private final Player player;
 
-    private final ServerOffices userPermission = ServerOffices.getInstance();
+    private final ServerOffices serverOffices = ServerOffices.getInstance();
 
     private PermissibleBase oldPermissibleBase;
 
@@ -21,13 +21,12 @@ public final class CrystolPermissible extends PermissibleBase {
 
     @Override
     public boolean hasPermission(String permission) {
-        boolean has = isOp();
-        if (!has) {
-            GroupPermission groupPermission = userPermission.getUser(player).getLargestGroup();
-            if (groupPermission != null)
-                has = groupPermission.hasPermission(permission);
-        }
-        return has;
+        if (isOp())
+            return true;
+        GroupPermission groupPermission = serverOffices.getUser(player).getLargestGroup();
+        if (groupPermission != null)
+            return groupPermission.hasPermission(permission);
+        return false;
     }
 
     @Override

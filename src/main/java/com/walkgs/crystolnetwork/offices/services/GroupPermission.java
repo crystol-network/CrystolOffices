@@ -26,12 +26,11 @@ public class GroupPermission {
     }
 
     public boolean addPermission(final String permission) {
-        boolean sucess = false;
         if (!this.permissions.contains(permission)) {
             this.permissions.add(permission);
-            sucess = true;
+            return true;
         }
-        return sucess;
+        return false;
     }
 
     public List<Boolean> addPermissions(final String... permissions) {
@@ -42,12 +41,11 @@ public class GroupPermission {
     }
 
     public boolean removePermission(final String permission) {
-        boolean sucess = false;
         if (this.permissions.contains(permission)) {
             this.permissions.remove(permission);
-            sucess = true;
+            return true;
         }
-        return sucess;
+        return false;
     }
 
     public List<Boolean> removePermissions(final String... permissions) {
@@ -58,28 +56,20 @@ public class GroupPermission {
     }
 
     public boolean hasPermission(final String permission) {
-        boolean has = permissions.contains(permission);
+        if (permissions.contains(permission) || permissions.contains("*"))
+            return true;
 
-        if (permissions.contains("*"))
-            has = true;
-
-        if (!has) {
-
-            String[] nodes = permission.split("\\.");
-            if (nodes.length > 0) {
-                String makeNode = "";
-                for (String node : nodes) {
-                    makeNode += node;
-                    if (permissions.contains(makeNode + ".*")) {
-                        has = true;
-                        break;
-                    }
-                }
+        String[] nodes = permission.split("\\.");
+        if (nodes.length > 0) {
+            StringBuilder nodeBuilder = new StringBuilder();
+            for (String node : nodes) {
+                nodeBuilder.append(node);
+                if (permissions.contains(nodeBuilder + ".*"))
+                    return true;
             }
-
         }
 
-        return has;
+        return false;
     }
 
     public List<Boolean> hasPermissions(final String... permissions) {

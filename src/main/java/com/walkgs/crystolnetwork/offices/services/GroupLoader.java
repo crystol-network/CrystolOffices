@@ -37,7 +37,7 @@ public class GroupLoader {
         return groups;
     }
 
-    public void loadGroups() {
+    public boolean loadGroups() {
 
         file = new File(plugin.getDataFolder(), "config.yml");
         config = new OfficesConfig(file.toPath());
@@ -47,6 +47,7 @@ public class GroupLoader {
         groups.clear();
 
         serverOffices.setServerName(config.getServerName());
+
         Map<String, OfficesData> registredGroups = config.getRegistredGroups();
         for (Map.Entry<String, OfficesData> groups : registredGroups.entrySet()) {
             OfficesData officesData = groups.getValue();
@@ -76,6 +77,8 @@ public class GroupLoader {
         }
 
         Bukkit.getConsoleSender().sendMessage("[" + plugin.getName() + "] §aLoaded in total §2" + registredGroups.size() + " §aregistered groups.");
+
+        return true;
 
     }
 

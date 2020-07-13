@@ -11,13 +11,21 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissibleBase;
 
+import java.util.UUID;
+
 public final class InjectListener implements Listener {
 
-    private final ServerOffices userPermission = ServerOffices.getInstance();
+    private final ServerOffices serverOffices = ServerOffices.getInstance();
 
     @EventHandler
     public final void onJoin(final PlayerJoinEvent event) {
-        userPermission.loadUser(event.getPlayer());
+
+        final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
+
+        serverOffices.loadUser(uuid);
+        serverOffices.injectInUser(player);
+
     }
 
     //@EventHandler
