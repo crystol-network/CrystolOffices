@@ -6,6 +6,9 @@ import com.walkgs.crystolnetwork.offices.events.RedisReceiveMessageEvent;
 import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
 import com.walkgs.crystolnetwork.offices.services.GroupPermission;
+import com.walkgs.crystolnetwork.offices.utils.JsonBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +25,8 @@ public class RedisListener implements Listener {
     @EventHandler
     public void onMessage(final RedisReceiveMessageEvent event) {
 
+        final JsonBuilder jsonBuilder = new JsonBuilder();
+
         final List<String> messages = new LinkedList<>(event.getReceivedData().values());
         if (messages.size() > 0) {
             final String functionType = messages.get(0);
@@ -37,17 +42,45 @@ public class RedisListener implements Listener {
                     final List<String> groups = gson.fromJson(messages.get(4), List.class);
                     if (groups.size() > 0) {
 
+                        final boolean normal = updateType.equals("normal");
+
+                        OfflinePlayer offlinePlayer = serverOffices.getPlugin().getServer().getPlayer(uuid);
+
+                        final String keySet = "settedOffice";
+                        if (!userManager.hasData(keySet))
+                            userManager.setData(keySet, new LinkedList<GroupPermission>());
+
                         final GroupLoader groupLoader = serverOffices.getGroupLoader();
                         for (String groupName : groups) {
-                            final GroupPermission group = groupLoader.getGroup(groupName);
-                            if (!userManager.hasGroup(groupName))
-                                userManager.addGroup(group);
-                        }
 
-                        if (updateType.equals("normal")) {
-                            Player player = serverOffices.getPlugin().getServer().getPlayer(uuid);
-                            if (player != null) {
-                                player.sendMessage("FOI ADICIONADO UM GRUPO");
+                            final GroupPermission group = groupLoader.getGroup(groupName);
+                            if (!userManager.hasGroup(groupName)) {
+                                userManager.addGroup(group);
+                            }
+                            if (normal) {
+                                if (offlinePlayer != null) {
+                                    if (offlinePlayer.isOnline()) {
+
+                                        final Player player = offlinePlayer.getPlayer();
+                                        final String charAt = "" + groupName.charAt(0);
+
+                                        jsonBuilder.append("§e * §3Foi adicionado o grupo §7" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§3.");
+                                        jsonBuilder.append("\n§e * §3Clique ");
+                                        jsonBuilder.append("§6[AQUI]",
+                                                "§eComemorar :)" +
+                                                        "\n§7- Irá ser enviado um título para todos que estiver online."
+                                                , HoverEvent.Action.SHOW_TEXT);
+                                        jsonBuilder.append(" §3para comemorar.");
+
+                                        player.sendMessage("");
+                                        player.spigot().sendMessage(jsonBuilder.build());
+                                        player.sendMessage("");
+
+                                    }
+                                    
+                                    ((List<GroupPermission>) userManager.getData(keySet)).add(group);
+
+                                }
                             }
                         }
 

@@ -202,7 +202,6 @@ public class PlayerPermission {
         }
 
         public void removeGroupsString(final List<String> groupPermissions, final String serverName) {
-            redisSender.clear();
             redisSender.add("updateOffice");
             redisSender.add("" + uuid);
             redisSender.add("removeGroups");
@@ -266,6 +265,24 @@ public class PlayerPermission {
 
         public List<GroupPermission> getGroups() {
             return userManager.getGroups();
+        }
+
+        //User data manager
+        public void setData(final String key, final Object object) {
+            userManager.setData(key, object);
+        }
+
+        public boolean removeData(final String key) {
+            return userManager.removeData(key);
+        }
+
+        public <T> T getData(final String key) {
+            final Object data = userManager.getData(key);
+            return (data != null ? (T) userManager.getData(key) : null);
+        }
+
+        public boolean hasData(final String key) {
+            return userManager.hasData(key);
         }
 
         //Others

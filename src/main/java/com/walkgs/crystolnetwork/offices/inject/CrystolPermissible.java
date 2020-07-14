@@ -27,7 +27,7 @@ public final class CrystolPermissible extends PermissibleBase {
     public boolean hasPermission(String permission) {
         if (isOp())
             return true;
-        GroupPermission groupPermission = playerPermission.getUser(player).getLargestGroup();
+        final GroupPermission groupPermission = playerPermission.getUser(player).getLargestGroup();
         if (groupPermission != null)
             return groupPermission.hasPermission(permission);
         return false;
@@ -49,4 +49,5 @@ public final class CrystolPermissible extends PermissibleBase {
     public Player getPlayer() {
         return player;
     }
+
 }

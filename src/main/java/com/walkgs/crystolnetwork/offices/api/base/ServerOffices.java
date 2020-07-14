@@ -50,14 +50,6 @@ public class ServerOffices {
         playerPermission = new PlayerPermission(this);
     }
 
-    //public UserManager getUser(Player player) {
-    //   return getUser(player.getUniqueId());
-    //}
-
-    //public UserManager getUser(UUID uuid) {
-    //   return userLoader.get(uuid);
-    //}
-
     public void setServerName(String serverName) {
         this.channelName = "ChannelMessageOf-" + serverName;
         this.serverName = serverName;
@@ -86,35 +78,6 @@ public class ServerOffices {
     public PlayerPermission getPlayerPermission() {
         return playerPermission;
     }
-
-    //public void loadUser(final OfflinePlayer player) {
-    //    loadUser(player.getUniqueId());
-    //}
-
-    //public void loadUser(final UUID uuid) {
-
-    //    userLoader.putIfNotExists(uuid, new UserManager(plugin, uuid));
-    //    getUser(uuid).addGroups(
-    //            getGroupLoader().getDefaultGroups()
-    //    );
-
-    //}
-
-    //public void injectInUser(final Player player) {
-
-    //    final PermissibleBase permissibleBase = PermissibleInjector.getPermissible(player);
-    //    if (permissibleBase != null) {
-
-    //        final CrystolPermissible newPermissibleBase = new CrystolPermissible(player);
-    //        newPermissibleBase.setOldPermissibleBase(permissibleBase);
-
-    //        final PlayerInjectPermissibleEvent permissibleEvent = new PlayerInjectPermissibleEvent(player, newPermissibleBase, permissibleBase).call();
-    //        if (!permissibleEvent.isCancelled()) {
-    //           PermissibleInjector.inject(player, permissibleEvent.getNewPermissible());
-    //        }
-    //    }
-
-    //}
 
     public TabService getTabService() {
         return TabService.getInstance();

@@ -15,6 +15,7 @@ public class UserManager implements Serializable, Cloneable {
     private final UUID uuid;
 
     private final List<GroupPermission> groups = new LinkedList<>();
+    private final HashMap<String, Object> data = new LinkedHashMap<>();
 
     public UserManager(final Plugin plugin, final UUID uuid) {
         this.uuid = uuid;
@@ -159,6 +160,25 @@ public class UserManager implements Serializable, Cloneable {
         }
 
         return groups;
+    }
+
+    public void setData(final String key, final Object object) {
+        removeData(key);
+        data.put(key, object);
+    }
+
+    public boolean removeData(final String key) {
+        if (!hasData(key)) return false;
+        data.remove(key);
+        return true;
+    }
+
+    public Object getData(final String key) {
+        return data.get(key);
+    }
+
+    public boolean hasData(final String key) {
+        return data.containsKey(key);
     }
 
     public List<GroupPermission> getGroups() {
