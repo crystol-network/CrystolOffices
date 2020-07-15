@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GroupPermission implements Comparable<GroupPermission>, Cloneable, Serializable {
+public class GroupService implements Comparable<GroupService>, Cloneable, Serializable {
 
     private final String name;
     private final String prefix;
@@ -18,7 +18,7 @@ public class GroupPermission implements Comparable<GroupPermission>, Cloneable, 
     //TODO: Function of Map<Permission, IsNode>
     private final List<String> permissions = new LinkedList<>();
 
-    public GroupPermission(final String name, final String prefix, final String suffix, final int rank, final boolean _default) {
+    public GroupService(final String name, final String prefix, final String suffix, final int rank, final boolean _default) {
         this.name = name;
         this.prefix = prefix;
         this.suffix = suffix;
@@ -110,7 +110,7 @@ public class GroupPermission implements Comparable<GroupPermission>, Cloneable, 
     }
 
     @Override
-    public int compareTo(GroupPermission comparable) {
+    public int compareTo(GroupService comparable) {
         if (getRank() < comparable.getRank())
             return -1;
         if (getRank() > comparable.getRank())

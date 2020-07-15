@@ -26,25 +26,25 @@ public class GroupLoader {
         this.plugin = plugin;
     }
 
-    private final Map<String, GroupPermission> groups = new LinkedHashMap();
+    private final Map<String, GroupService> groups = new LinkedHashMap();
 
-    public List<GroupPermission> getDefaultGroups() {
-        final List<GroupPermission> groups = new ArrayList<>();
-        for (GroupPermission group : this.groups.values()) {
+    public List<GroupService> getDefaultGroups() {
+        final List<GroupService> groups = new ArrayList<>();
+        for (GroupService group : this.groups.values()) {
             if (group.isDefault())
                 groups.add(group);
         }
         return groups;
     }
 
-    public GroupPermission getGroup(String name) {
+    public GroupService getGroup(String name) {
         return groups.get(name);
     }
 
-    public GroupPermission getGroup(Integer rank) {
-        for (GroupPermission groupPermission : groups.values()) {
-            if (groupPermission.getRank() == rank)
-                return groupPermission;
+    public GroupService getGroup(Integer rank) {
+        for (GroupService groupService : groups.values()) {
+            if (groupService.getRank() == rank)
+                return groupService;
         }
         return null;
     }
@@ -68,7 +68,7 @@ public class GroupLoader {
         for (Map.Entry<String, OfficesData> groups : registredGroups.entrySet()) {
             OfficesData officesData = groups.getValue();
 
-            GroupPermission groupPermission = new GroupPermission(
+            GroupService groupService = new GroupService(
                     groups.getKey(),
                     officesData.getPrefix(),
                     officesData.getSuffix(),
@@ -77,18 +77,18 @@ public class GroupLoader {
             );
 
             for (String permission : officesData.getPermissions())
-                groupPermission.addPermission(permission);
+                groupService.addPermission(permission);
 
             for (Map.Entry<String, OfficesData> childrens : registredGroups.entrySet()) {
                 OfficesData childrenData = childrens.getValue();
-                if (childrenData.getRank() > groupPermission.getRank())
+                if (childrenData.getRank() > groupService.getRank())
                     for (String permission : childrenData.getPermissions()) {
-                        if (permission.startsWith("c:"))
-                            groupPermission.addPermission(permission.replaceFirst("c:", ""));
+                        if (!permission.startsWith("e:"))
+                            groupService.addPermission(permission.replaceFirst("c:", ""));
                     }
             }
 
-            this.groups.put(groupPermission.getName(), groupPermission);
+            this.groups.put(groupService.getName(), groupService);
 
         }
 

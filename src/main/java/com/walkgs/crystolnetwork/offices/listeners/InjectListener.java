@@ -30,7 +30,7 @@ public final class InjectListener implements Listener {
         user.load();
         user.inject();
 
-        user.addGroup("example");
+        user.addGroup(serverOffices.getGroupLoader().getGroup("example"));
 
     }
 

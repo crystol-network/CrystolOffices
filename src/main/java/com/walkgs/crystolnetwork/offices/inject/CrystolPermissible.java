@@ -2,7 +2,7 @@ package com.walkgs.crystolnetwork.offices.inject;
 
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
 import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
-import com.walkgs.crystolnetwork.offices.services.GroupPermission;
+import com.walkgs.crystolnetwork.offices.services.GroupService;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
@@ -27,9 +27,9 @@ public final class CrystolPermissible extends PermissibleBase {
     public boolean hasPermission(String permission) {
         if (isOp())
             return true;
-        final GroupPermission groupPermission = playerPermission.getUser(player).getLargestGroup();
-        if (groupPermission != null)
-            return groupPermission.hasPermission(permission);
+        final GroupService groupService = playerPermission.getUser(player).getLargestGroup();
+        if (groupService != null)
+            return groupService.hasPermission(permission);
         return false;
     }
 

@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Comment({
         "This plugin developed by WalkGS for CrystolNetwork",
-        "Use 'c:' to share permission with top position",
+        "Use 'e:' to leave the permission exclusive to a group.",
         "Use '*' to have all permissions",
         "Use 'permission. *' To have all permissions for a certain permission"
 })

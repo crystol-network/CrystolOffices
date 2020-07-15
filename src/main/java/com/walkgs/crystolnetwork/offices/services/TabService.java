@@ -138,8 +138,8 @@ public class TabService {
                         tabUpdate.onUpdate(tabFactory);
                     //TODO: GET TAB DATA
                     final String uuidString = tabPlayer.getUniqueId().toString().replace("-", "").substring(0, 15);
-                    final GroupPermission groupPermission = user.getLargestGroup();
-                    final String teamName = chars[groupPermission.getRank()] + uuidString;
+                    final GroupService groupService = user.getLargestGroup();
+                    final String teamName = chars[groupService.getRank()] + uuidString;
                     Team team = scoreboard.getTeam(teamName);
                     if (team == null)
                         team = scoreboard.registerNewTeam(teamName);

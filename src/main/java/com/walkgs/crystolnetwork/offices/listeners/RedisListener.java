@@ -5,7 +5,7 @@ import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.events.RedisReceiveMessageEvent;
 import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
-import com.walkgs.crystolnetwork.offices.services.GroupPermission;
+import com.walkgs.crystolnetwork.offices.services.GroupService;
 import com.walkgs.crystolnetwork.offices.utils.JsonBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.OfflinePlayer;
@@ -39,7 +39,7 @@ public class RedisListener implements Listener {
                 //addGroups function
                 if (eventType.equals("addGroups")) {
                     final String updateType = messages.get(3);
-                    final List<Integer> groupsRanks = gson.fromJson(messages.get(4), List.class);
+                    final List<Double> groupsRanks = gson.fromJson(messages.get(4), List.class);
                     if (groupsRanks.size() > 0) {
 
                         final boolean normal = updateType.equals("normal");
@@ -48,15 +48,17 @@ public class RedisListener implements Listener {
 
                         final String keySet = "settedOffice";
                         if (!userManager.hasData(keySet))
-                            userManager.setData(keySet, new LinkedList<GroupPermission>());
+                            userManager.setData(keySet, new LinkedList<GroupService>());
 
                         final GroupLoader groupLoader = serverOffices.getGroupLoader();
-                        for (Integer groupRank : groupsRanks) {
+                        for (Double rank : groupsRanks) {
+                            final int groupRank = rank.intValue();
 
-                            final GroupPermission group = groupLoader.getGroup(groupRank);
+                            final GroupService group = groupLoader.getGroup(groupRank);
                             if (group != null && !userManager.hasGroup(group.getRank())) {
                                 userManager.addGroup(group);
                             }
+
                             if (normal) {
                                 if (offlinePlayer != null) {
                                     if (offlinePlayer.isOnline()) {
@@ -65,7 +67,7 @@ public class RedisListener implements Listener {
                                         final Player player = offlinePlayer.getPlayer();
                                         final String charAt = "" + groupName.charAt(0);
 
-                                        jsonBuilder.append("§6 * §eFoi adicionado o grupo §6" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§3.");
+                                        jsonBuilder.append("§6 * §eFoi adicionado o grupo §6" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§e em sua conta.");
                                         jsonBuilder.append("\n§6 * §eClique ");
                                         jsonBuilder.append("§6[AQUI]",
                                                 "§eComemorar :)" +
@@ -78,11 +80,12 @@ public class RedisListener implements Listener {
                                         player.sendMessage("");
 
                                     }
-                                    
-                                    ((List<GroupPermission>) userManager.getData(keySet)).add(group);
+
+                                    //((List<GroupService>) userManager.getData(keySet)).add(group);
 
                                 }
                             }
+
                         }
 
                     }
@@ -94,7 +97,7 @@ public class RedisListener implements Listener {
 
                         final GroupLoader groupLoader = serverOffices.getGroupLoader();
                         for (String groupName : groups) {
-                            final GroupPermission group = groupLoader.getGroup(groupName);
+                            final GroupService group = groupLoader.getGroup(groupName);
                             userManager.removeGroup(group);
                         }
 
@@ -103,5 +106,11 @@ public class RedisListener implements Listener {
             }
         }
     }
+
+    public void a() {
+
+
+    }
+
 
 }

@@ -2,7 +2,7 @@ package com.walkgs.crystolnetwork.offices.manager;
 
 import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
-import com.walkgs.crystolnetwork.offices.services.GroupPermission;
+import com.walkgs.crystolnetwork.offices.services.GroupService;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 
@@ -20,7 +20,7 @@ public class UserManager implements Serializable, Cloneable {
 
     //Caches
 
-    private final Map<Integer, GroupPermission> groups = new LinkedHashMap<>();
+    private final Map<Integer, GroupService> groups = new LinkedHashMap<>();
     private final Map<String, Object> data = new LinkedHashMap<>();
 
     public UserManager(final ServerOffices serverOffices, final UUID uuid) {
@@ -30,40 +30,41 @@ public class UserManager implements Serializable, Cloneable {
         this.groupLoader = serverOffices.getGroupLoader();
     }
 
-    public GroupPermission getLargestGroup() {
+    public GroupService getLargestGroup() {
         if (largestRank == -1) return null;
+        serverOffices.getPlugin().getServer().getConsoleSender().sendMessage("Largest: " + largestRank);
         return groups.get(largestRank);
     }
 
-    public boolean addGroup(final GroupPermission groupPermission) {
-        final int rank = groupPermission.getRank();
+    public boolean addGroup(final GroupService groupService) {
+        final int rank = groupService.getRank();
         if (hasGroup(rank)) return false;
-        groups.put(rank, groupPermission);
+        groups.put(rank, groupService);
         if (largestRank >= rank)
             largestRank = rank;
         return true;
     }
 
-    public List<Boolean> addGroups(final List<GroupPermission> groupPermissions) {
+    public List<Boolean> addGroups(final List<GroupService> groupServices) {
         final List<Boolean> result = new ArrayList<>();
-        for (GroupPermission groupPermission : groupPermissions) {
-            result.add(addGroup(groupPermission));
+        for (GroupService groupService : groupServices) {
+            result.add(addGroup(groupService));
         }
         return result;
     }
 
-    public boolean removeGroup(final GroupPermission groupPermission) {
-        return removeGroup(groupPermission, true);
+    public boolean removeGroup(final GroupService groupService) {
+        return removeGroup(groupService, true);
     }
 
-    private boolean removeGroup(final GroupPermission groupPermission, boolean recalculate) {
-        final int rank = groupPermission.getRank();
+    private boolean removeGroup(final GroupService groupService, boolean recalculate) {
+        final int rank = groupService.getRank();
         if (!hasGroup(rank)) return false;
         groups.remove(rank);
         if (recalculate) {
             if (!groups.isEmpty()) {
                 if (largestRank > rank) {
-                    for (GroupPermission group : groups.values()) {
+                    for (GroupService group : groups.values()) {
                         final int groupRank = group.getRank();
                         if (largestRank > groupRank)
                             largestRank = groupRank;
@@ -75,12 +76,12 @@ public class UserManager implements Serializable, Cloneable {
         return true;
     }
 
-    public List<Boolean> removeGroups(final List<GroupPermission> groupPermissions) {
+    public List<Boolean> removeGroups(final List<GroupService> groupServices) {
         final List<Boolean> sucess = new ArrayList<>();
-        for (GroupPermission groupPermission : groupPermissions)
-            sucess.add(removeGroup(groupPermission, false));
+        for (GroupService groupService : groupServices)
+            sucess.add(removeGroup(groupService, false));
         if (!groups.isEmpty()) {
-            for (GroupPermission group : groups.values()) {
+            for (GroupService group : groups.values()) {
                 final int groupRank = group.getRank();
                 if (largestRank > groupRank)
                     largestRank = groupRank;
@@ -90,47 +91,47 @@ public class UserManager implements Serializable, Cloneable {
         return sucess;
     }
 
-    public GroupPermission getGroup(final String name) {
-        final GroupPermission groupPermission = groupLoader.getGroup(name.toLowerCase());
-        if (groupPermission == null || !hasGroup(groupPermission.getRank()))
+    public GroupService getGroup(final String name) {
+        final GroupService groupService = groupLoader.getGroup(name.toLowerCase());
+        if (groupService == null || !hasGroup(groupService.getRank()))
             return null;
-        return groupPermission;
+        return groupService;
     }
 
 
-    public GroupPermission getGroup(final int rank) {
+    public GroupService getGroup(final int rank) {
         return groups.get(rank);
     }
 
-    public Map<Integer, GroupPermission> getGroupAndHighers(final int rank) {
-        final Map<Integer, GroupPermission> result = new LinkedHashMap<>();
+    public Map<Integer, GroupService> getGroupAndHighers(final int rank) {
+        final Map<Integer, GroupService> result = new LinkedHashMap<>();
 
-        final List<GroupPermission> groups = getGroups();
+        final List<GroupService> groups = getGroups();
         Collections.sort(groups);
 
-        for (GroupPermission groupPermission : groups) {
-            final int groupRank = groupPermission.getRank();
+        for (GroupService groupService : groups) {
+            final int groupRank = groupService.getRank();
             if (rank >= groupRank)
-                result.put(groupRank, groupPermission);
+                result.put(groupRank, groupService);
         }
 
         return result;
     }
 
-    public Map<Integer, GroupPermission> getGroupAndHighers(final GroupPermission groupPermission) {
-        return getGroupAndHighers(groupPermission.getRank());
+    public Map<Integer, GroupService> getGroupAndHighers(final GroupService groupService) {
+        return getGroupAndHighers(groupService.getRank());
     }
 
-    public boolean hasGroup(final GroupPermission groupPermission) {
-        return hasGroup(groupPermission.getRank());
+    public boolean hasGroup(final GroupService groupService) {
+        return hasGroup(groupService.getRank());
     }
 
     public boolean hasGroup(final int rank) {
         return groups.containsKey(rank);
     }
 
-    public boolean hasGroupOrHigher(final GroupPermission groupPermission) {
-        return !getGroupAndHighers(groupPermission.getRank()).isEmpty();
+    public boolean hasGroupOrHigher(final GroupService groupService) {
+        return !getGroupAndHighers(groupService.getRank()).isEmpty();
     }
 
     public boolean hasGroupOrHigher(final int rank) {
@@ -160,7 +161,7 @@ public class UserManager implements Serializable, Cloneable {
 
     //Others
 
-    public List<GroupPermission> getGroups() {
+    public List<GroupService> getGroups() {
         return new LinkedList<>(groups.values());
     }
 

@@ -9,7 +9,7 @@ import com.walkgs.crystolnetwork.offices.inject.PermissibleInjector;
 import com.walkgs.crystolnetwork.offices.job.RedisSender;
 import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
-import com.walkgs.crystolnetwork.offices.services.GroupPermission;
+import com.walkgs.crystolnetwork.offices.services.GroupService;
 import com.walkgs.crystolnetwork.offices.services.UserLoader;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -66,44 +66,44 @@ public class PlayerPermission {
 
         //Add group
 
-        public void addGroup(final GroupPermission groupPermission) {
-            addGroups(serverOffices.getServerName(), false, groupPermission);
+        public void addGroup(final GroupService groupService) {
+            addGroups(serverOffices.getServerName(), false, groupService);
         }
 
-        public void addGroup(final GroupPermission groupPermission, final String serverName) {
-            addGroups(serverName, false, groupPermission);
+        public void addGroup(final GroupService groupService, final String serverName) {
+            addGroups(serverName, false, groupService);
         }
 
-        public void addGroup(final GroupPermission groupPermission, final String serverName, final boolean force) {
-            addGroups(serverName, force, groupPermission);
+        public void addGroup(final GroupService groupService, final String serverName, final boolean force) {
+            addGroups(serverName, force, groupService);
         }
 
         //Add groups
 
-        public void addGroups(final GroupPermission... groupPermissions) {
-            addGroups(serverOffices.getServerName(), false, groupPermissions);
+        public void addGroups(final GroupService... groupServices) {
+            addGroups(serverOffices.getServerName(), false, groupServices);
         }
 
-        public void addGroups(final List<GroupPermission> groupPermissions) {
-            addGroups(groupPermissions, serverOffices.getServerName(), false);
+        public void addGroups(final List<GroupService> groupServices) {
+            addGroups(groupServices, serverOffices.getServerName(), false);
         }
 
-        public void addGroups(final String serverName, final GroupPermission... groupPermissions) {
-            addGroups(serverName, false, groupPermissions);
+        public void addGroups(final String serverName, final GroupService... groupServices) {
+            addGroups(serverName, false, groupServices);
         }
 
-        public void addGroups(final List<GroupPermission> groupPermissions, final String serverName) {
-            addGroups(groupPermissions, serverName, false);
+        public void addGroups(final List<GroupService> groupServices, final String serverName) {
+            addGroups(groupServices, serverName, false);
         }
 
-        public void addGroups(final String serverName, final boolean force, final GroupPermission... groupPermissions) {
-            addGroups(Arrays.asList(groupPermissions), serverName, force);
+        public void addGroups(final String serverName, final boolean force, final GroupService... groupServices) {
+            addGroups(Arrays.asList(groupServices), serverName, force);
         }
 
-        public void addGroups(final List<GroupPermission> groupPermissions, final String serverName, final boolean force) {
+        public void addGroups(final List<GroupService> groupServices, final String serverName, final boolean force) {
             final List<Integer> groupsRanks = new LinkedList<>();
-            for (GroupPermission groupPermission : groupPermissions)
-                groupsRanks.add(groupPermission.getRank());
+            for (GroupService groupService : groupServices)
+                groupsRanks.add(groupService.getRank());
             redisSender.add("updateOffice");
             redisSender.add("" + uuid);
             redisSender.add("addGroups");
@@ -114,32 +114,32 @@ public class PlayerPermission {
 
         //Remove group
 
-        public void removeGroup(final GroupPermission groupPermission) {
-            removeGroups(groupPermission);
+        public void removeGroup(final GroupService groupService) {
+            removeGroups(groupService);
         }
 
-        public void removeGroup(final GroupPermission groupPermission, final String serverName) {
-            removeGroups(serverName, groupPermission);
+        public void removeGroup(final GroupService groupService, final String serverName) {
+            removeGroups(serverName, groupService);
         }
 
         //Remove groups
 
-        public void removeGroups(final GroupPermission... groupPermissions) {
-            removeGroups(serverOffices.getServerName(), groupPermissions);
+        public void removeGroups(final GroupService... groupServices) {
+            removeGroups(serverOffices.getServerName(), groupServices);
         }
 
-        public void removeGroups(final List<GroupPermission> groupPermissions) {
-            removeGroups(groupPermissions, serverOffices.getServerName());
+        public void removeGroups(final List<GroupService> groupServices) {
+            removeGroups(groupServices, serverOffices.getServerName());
         }
 
-        public void removeGroups(final String serverName, final GroupPermission... groupPermissions) {
-            removeGroups(Arrays.asList(groupPermissions), serverName);
+        public void removeGroups(final String serverName, final GroupService... groupServices) {
+            removeGroups(Arrays.asList(groupServices), serverName);
         }
 
-        public void removeGroups(final List<GroupPermission> groupPermissions, final String serverName) {
+        public void removeGroups(final List<GroupService> groupServices, final String serverName) {
             final List<Integer> groupsRanks = new LinkedList<>();
-            for (GroupPermission groupPermission : groupPermissions)
-                groupsRanks.add(groupPermission.getRank());
+            for (GroupService groupService : groupServices)
+                groupsRanks.add(groupService.getRank());
             redisSender.add("updateOffice");
             redisSender.add("" + uuid);
             redisSender.add("removeGroups");
@@ -153,39 +153,39 @@ public class PlayerPermission {
             return userManager.hasGroup(groupPermissionRank);
         }
 
-        public boolean hasGroup(final GroupPermission groupPermission) {
-            return userManager.hasGroup(groupPermission);
+        public boolean hasGroup(final GroupService groupService) {
+            return userManager.hasGroup(groupService);
         }
 
         public boolean hasGroupOrHigher(final int groupRank) {
             return userManager.hasGroupOrHigher(groupRank);
         }
 
-        public boolean hasGroupOrHigher(final GroupPermission group) {
+        public boolean hasGroupOrHigher(final GroupService group) {
             return userManager.hasGroupOrHigher(group);
         }
 
-        public GroupPermission getGroup(final int groupRank) {
+        public GroupService getGroup(final int groupRank) {
             return userManager.getGroup(groupRank);
         }
 
-        public GroupPermission getGroup(final String groupName) {
+        public GroupService getGroup(final String groupName) {
             return userManager.getGroup(groupName);
         }
 
-        public Map<Integer, GroupPermission> getGroupAndHighers(final int groupRank) {
+        public Map<Integer, GroupService> getGroupAndHighers(final int groupRank) {
             return userManager.getGroupAndHighers(groupRank);
         }
 
-        public Map<Integer, GroupPermission> getGroupAndHighers(final GroupPermission group) {
+        public Map<Integer, GroupService> getGroupAndHighers(final GroupService group) {
             return userManager.getGroupAndHighers(group);
         }
 
-        public GroupPermission getLargestGroup() {
+        public GroupService getLargestGroup() {
             return userManager.getLargestGroup();
         }
 
-        public List<GroupPermission> getGroups() {
+        public List<GroupService> getGroups() {
             return userManager.getGroups();
         }
 

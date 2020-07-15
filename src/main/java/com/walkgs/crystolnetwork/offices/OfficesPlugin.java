@@ -5,7 +5,7 @@ import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
 import com.walkgs.crystolnetwork.offices.job.RedisJob;
 import com.walkgs.crystolnetwork.offices.listeners.InjectListener;
 import com.walkgs.crystolnetwork.offices.listeners.RedisListener;
-import com.walkgs.crystolnetwork.offices.services.GroupPermission;
+import com.walkgs.crystolnetwork.offices.services.GroupService;
 import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import com.walkgs.crystolnetwork.offices.services.TabService;
 import org.bukkit.Bukkit;
@@ -40,16 +40,16 @@ public class OfficesPlugin extends JavaPlugin {
             }
 
             final TabService tabService = serverOffices.getTabService();
-            tabService.start(this, getServer());
+            //tabService.start(this, getServer());
             tabService.execute(new TabService.TabUpdate() {
 
                 @Override
                 public void onUpdate(TabService.TabFactory tabFactory) {
                     final Player player = tabFactory.getPlayer();
                     final PlayerPermission.UserData user = playerPermission.getUser(player);
-                    final GroupPermission groupPermission = user.getLargestGroup();
-                    tabFactory.appendPrefix(groupPermission.getPrefix());
-                    tabFactory.appendSuffix(groupPermission.getSuffix());
+                    final GroupService groupService = user.getLargestGroup();
+                    tabFactory.appendPrefix(groupService.getPrefix());
+                    tabFactory.appendSuffix(groupService.getSuffix());
                 }
 
             });
