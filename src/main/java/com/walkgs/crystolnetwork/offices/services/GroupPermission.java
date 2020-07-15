@@ -1,10 +1,11 @@
 package com.walkgs.crystolnetwork.offices.services;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GroupPermission {
+public class GroupPermission implements Comparable<GroupPermission>, Cloneable, Serializable {
 
     private final String name;
     private final String prefix;
@@ -108,5 +109,13 @@ public class GroupPermission {
         return _default;
     }
 
+    @Override
+    public int compareTo(GroupPermission comparable) {
+        if (getRank() < comparable.getRank())
+            return -1;
+        if (getRank() > comparable.getRank())
+            return 1;
+        return 0;
+    }
 
 }

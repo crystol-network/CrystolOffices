@@ -39,8 +39,8 @@ public class RedisListener implements Listener {
                 //addGroups function
                 if (eventType.equals("addGroups")) {
                     final String updateType = messages.get(3);
-                    final List<String> groups = gson.fromJson(messages.get(4), List.class);
-                    if (groups.size() > 0) {
+                    final List<Integer> groupsRanks = gson.fromJson(messages.get(4), List.class);
+                    if (groupsRanks.size() > 0) {
 
                         final boolean normal = updateType.equals("normal");
 
@@ -51,26 +51,27 @@ public class RedisListener implements Listener {
                             userManager.setData(keySet, new LinkedList<GroupPermission>());
 
                         final GroupLoader groupLoader = serverOffices.getGroupLoader();
-                        for (String groupName : groups) {
+                        for (Integer groupRank : groupsRanks) {
 
-                            final GroupPermission group = groupLoader.getGroup(groupName);
-                            if (!userManager.hasGroup(groupName)) {
+                            final GroupPermission group = groupLoader.getGroup(groupRank);
+                            if (group != null && !userManager.hasGroup(group.getRank())) {
                                 userManager.addGroup(group);
                             }
                             if (normal) {
                                 if (offlinePlayer != null) {
                                     if (offlinePlayer.isOnline()) {
 
+                                        final String groupName = group.getName();
                                         final Player player = offlinePlayer.getPlayer();
                                         final String charAt = "" + groupName.charAt(0);
 
-                                        jsonBuilder.append("§e * §3Foi adicionado o grupo §7" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§3.");
-                                        jsonBuilder.append("\n§e * §3Clique ");
+                                        jsonBuilder.append("§6 * §eFoi adicionado o grupo §6" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§3.");
+                                        jsonBuilder.append("\n§6 * §eClique ");
                                         jsonBuilder.append("§6[AQUI]",
                                                 "§eComemorar :)" +
                                                         "\n§7- Irá ser enviado um título para todos que estiver online."
                                                 , HoverEvent.Action.SHOW_TEXT);
-                                        jsonBuilder.append(" §3para comemorar.");
+                                        jsonBuilder.append(" §epara comemorar.");
 
                                         player.sendMessage("");
                                         player.spigot().sendMessage(jsonBuilder.build());

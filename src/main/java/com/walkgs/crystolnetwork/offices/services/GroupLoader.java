@@ -41,6 +41,14 @@ public class GroupLoader {
         return groups.get(name);
     }
 
+    public GroupPermission getGroup(Integer rank) {
+        for (GroupPermission groupPermission : groups.values()) {
+            if (groupPermission.getRank() == rank)
+                return groupPermission;
+        }
+        return null;
+    }
+
     public boolean existsGroup(String name) {
         return groups.containsKey(name);
     }

@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerPermission {
 
@@ -81,75 +78,37 @@ public class PlayerPermission {
             addGroups(serverName, force, groupPermission);
         }
 
-        public void addGroup(final String groupPermission) {
-            addGroups(serverOffices.getServerName(), false, groupPermission);
-        }
-
-        public void addGroup(final String groupPermission, final String serverName) {
-            addGroups(serverName, false, groupPermission);
-        }
-
-        public void addGroup(final String groupPermission, final String serverName, final boolean force) {
-            addGroups(serverName, force, groupPermission);
-        }
-
         //Add groups
 
         public void addGroups(final GroupPermission... groupPermissions) {
-            addGroups(Arrays.asList(groupPermissions), serverOffices.getServerName(), false);
-        }
-
-        public void addGroupsString(final String... groupPermissions) {
-            addGroupsString(Arrays.asList(groupPermissions), serverOffices.getServerName(), false);
+            addGroups(serverOffices.getServerName(), false, groupPermissions);
         }
 
         public void addGroups(final List<GroupPermission> groupPermissions) {
             addGroups(groupPermissions, serverOffices.getServerName(), false);
         }
 
-        public void addGroupsString(final List<String> groupPermissions) {
-            addGroupsString(groupPermissions, serverOffices.getServerName(), false);
-        }
-
         public void addGroups(final String serverName, final GroupPermission... groupPermissions) {
-            addGroups(Arrays.asList(groupPermissions), serverName, false);
-        }
-
-        public void addGroups(final String serverName, final String... groupPermissions) {
-            addGroupsString(Arrays.asList(groupPermissions), serverName, false);
+            addGroups(serverName, false, groupPermissions);
         }
 
         public void addGroups(final List<GroupPermission> groupPermissions, final String serverName) {
             addGroups(groupPermissions, serverName, false);
         }
 
-        public void addGroupsString(final List<String> groupPermissions, final String serverName) {
-            addGroupsString(groupPermissions, serverName, false);
-        }
-
         public void addGroups(final String serverName, final boolean force, final GroupPermission... groupPermissions) {
             addGroups(Arrays.asList(groupPermissions), serverName, force);
         }
 
-        public void addGroups(final String serverName, final boolean force, final String... groupPermissions) {
-            addGroupsString(Arrays.asList(groupPermissions), serverName, force);
-        }
-
         public void addGroups(final List<GroupPermission> groupPermissions, final String serverName, final boolean force) {
-            final List<String> groups = new LinkedList<>();
-            for (GroupPermission groupPermission : groupPermissions) {
-                groups.add(groupPermission.getName());
-            }
-            addGroupsString(groups, serverName, force);
-        }
-
-        public void addGroupsString(final List<String> groupPermissions, final String serverName, final boolean force) {
-            redisSender.clear();
+            final List<Integer> groupsRanks = new LinkedList<>();
+            for (GroupPermission groupPermission : groupPermissions)
+                groupsRanks.add(groupPermission.getRank());
             redisSender.add("updateOffice");
             redisSender.add("" + uuid);
             redisSender.add("addGroups");
             redisSender.add((force ? "forced" : "normal"));
-            redisSender.add(gson.toJson(groupPermissions));
+            redisSender.add(gson.toJson(groupsRanks));
             redisSender.send(serverName);
         }
 
@@ -163,49 +122,28 @@ public class PlayerPermission {
             removeGroups(serverName, groupPermission);
         }
 
-        public void removeGroup(final String groupPermission) {
-            removeGroups(groupPermission);
-        }
-
-        public void removeGroup(final String groupPermission, final String serverName) {
-            removeGroupsString(serverName, groupPermission);
-        }
-
         //Remove groups
 
         public void removeGroups(final GroupPermission... groupPermissions) {
-            removeGroups(Arrays.asList(groupPermissions), serverOffices.getServerName());
+            removeGroups(serverOffices.getServerName(), groupPermissions);
         }
 
         public void removeGroups(final List<GroupPermission> groupPermissions) {
             removeGroups(groupPermissions, serverOffices.getServerName());
         }
 
-        public void removeGroupsString(final List<String> groupPermissions) {
-            removeGroupsString(groupPermissions, serverOffices.getServerName());
-        }
-
         public void removeGroups(final String serverName, final GroupPermission... groupPermissions) {
             removeGroups(Arrays.asList(groupPermissions), serverName);
         }
 
-        public void removeGroupsString(final String serverName, final String... groupPermissions) {
-            removeGroupsString(Arrays.asList(groupPermissions), serverName);
-        }
-
         public void removeGroups(final List<GroupPermission> groupPermissions, final String serverName) {
-            final List<String> groups = new LinkedList<>();
-            for (GroupPermission groupPermission : groupPermissions) {
-                groups.add(groupPermission.getName());
-            }
-            removeGroupsString(groups, serverName);
-        }
-
-        public void removeGroupsString(final List<String> groupPermissions, final String serverName) {
+            final List<Integer> groupsRanks = new LinkedList<>();
+            for (GroupPermission groupPermission : groupPermissions)
+                groupsRanks.add(groupPermission.getRank());
             redisSender.add("updateOffice");
             redisSender.add("" + uuid);
             redisSender.add("removeGroups");
-            redisSender.add(gson.toJson(groupPermissions));
+            redisSender.add(gson.toJson(groupsRanks));
             redisSender.send(serverName);
         }
 
@@ -215,48 +153,32 @@ public class PlayerPermission {
             return userManager.hasGroup(groupPermissionRank);
         }
 
-        public boolean hasGroup(final String groupPermission) {
-            return userManager.hasGroup(groupPermission);
-        }
-
         public boolean hasGroup(final GroupPermission groupPermission) {
             return userManager.hasGroup(groupPermission);
         }
 
-        public boolean hasGroupOrHigher(final int groupPermissionRank) {
-            return userManager.hasGroupOrHigher(groupPermissionRank);
+        public boolean hasGroupOrHigher(final int groupRank) {
+            return userManager.hasGroupOrHigher(groupRank);
         }
 
-        public boolean hasGroupOrHigher(final String groupPermission) {
-            return userManager.hasGroupOrHigher(groupPermission);
+        public boolean hasGroupOrHigher(final GroupPermission group) {
+            return userManager.hasGroupOrHigher(group);
         }
 
-        public boolean hasGroupOrHigher(final GroupPermission groupPermission) {
-            return userManager.hasGroupOrHigher(groupPermission);
+        public GroupPermission getGroup(final int groupRank) {
+            return userManager.getGroup(groupRank);
         }
 
-        public GroupPermission getGroup(final int groupPermissionRank) {
-            return userManager.getGroup(groupPermissionRank);
+        public GroupPermission getGroup(final String groupName) {
+            return userManager.getGroup(groupName);
         }
 
-        public GroupPermission getGroup(final String groupPermission) {
-            return userManager.getGroup(groupPermission);
+        public Map<Integer, GroupPermission> getGroupAndHighers(final int groupRank) {
+            return userManager.getGroupAndHighers(groupRank);
         }
 
-        public GroupPermission getGroup(final GroupPermission groupPermission) {
-            return userManager.getGroup(groupPermission);
-        }
-
-        public List<GroupPermission> getGroupAndHighers(final int groupPermissionRank) {
-            return userManager.getGroupAndHighers(groupPermissionRank);
-        }
-
-        public List<GroupPermission> getGroupAndHighers(final String groupPermission) {
-            return userManager.getGroupAndHighers(groupPermission);
-        }
-
-        public List<GroupPermission> getGroupAndHighers(final GroupPermission groupPermission) {
-            return userManager.getGroupAndHighers(groupPermission);
+        public Map<Integer, GroupPermission> getGroupAndHighers(final GroupPermission group) {
+            return userManager.getGroupAndHighers(group);
         }
 
         public GroupPermission getLargestGroup() {
@@ -288,7 +210,7 @@ public class PlayerPermission {
         //Others
 
         public void load() {
-            if (userLoader.loadIfNotLoaded(uuid, new UserManager(plugin, uuid))) {
+            if (userLoader.loadIfNotLoaded(uuid, new UserManager(serverOffices, uuid))) {
                 userManager = userLoader.get(uuid);
                 userManager.addGroups(groupLoader.getDefaultGroups());
             }
