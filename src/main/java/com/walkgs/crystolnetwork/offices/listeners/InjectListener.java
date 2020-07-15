@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.listeners;
 
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,12 +12,12 @@ import java.util.UUID;
 
 public final class InjectListener implements Listener {
 
-    private final ServerOffices serverOffices;
+    private final OfficesServices officesServices;
     private final PlayerPermission playerPermission;
 
     public InjectListener() {
-        this.serverOffices = ServerOffices.getInstance();
-        this.playerPermission = new PlayerPermission(serverOffices);
+        this.officesServices = OfficesServices.getInstance();
+        this.playerPermission = new PlayerPermission(officesServices);
     }
 
     @EventHandler
@@ -31,8 +31,8 @@ public final class InjectListener implements Listener {
         user.inject();
 
         //Test add group system
-        //user.addGroup(serverOffices.getGroupLoader().getGroup("example"));
-        //user.addGroup(serverOffices.getGroupLoader().getGroup("teste"));
+        //user.addGroup(officesServices.getGroupLoader().getGroup("example"));
+        //user.addGroup(officesServices.getGroupLoader().getGroup("teste"));
 
     }
 

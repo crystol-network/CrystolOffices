@@ -2,7 +2,7 @@ package com.walkgs.crystolnetwork.offices.services;
 
 import com.walkgs.crystolnetwork.offices.OfficesPlugin;
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.utils.CachedCycle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +32,7 @@ public class TabService {
 
     //TODO: FUNCTIONS CLASS
 
-    private final ServerOffices serverOffices = ServerOffices.getInstance();
+    private final OfficesServices officesServices = OfficesServices.getInstance();
 
     private final char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
@@ -119,7 +119,7 @@ public class TabService {
     }
 
     public void start(Plugin plugin, Server server) {
-        final PlayerPermission playerPermission = serverOffices.getPlayerPermission();
+        final PlayerPermission playerPermission = officesServices.getPlayerPermission();
         server.getScheduler().runTaskTimer(plugin, () -> {
             for (final Player player : Bukkit.getOnlinePlayers()) {
 

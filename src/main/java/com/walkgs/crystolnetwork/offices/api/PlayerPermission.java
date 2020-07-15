@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.api;
 
 import com.google.gson.Gson;
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.events.PlayerInjectPermissibleEvent;
 import com.walkgs.crystolnetwork.offices.events.PlayerUnInjectPermissibleEvent;
 import com.walkgs.crystolnetwork.offices.inject.CrystolPermissible;
@@ -28,14 +28,14 @@ public class PlayerPermission {
     private final GroupLoader groupLoader;
     private final NetworkService networkService;
 
-    private final ServerOffices serverOffices;
+    private final OfficesServices officesServices;
 
-    public PlayerPermission(final ServerOffices serverOffices) {
-        this.serverOffices = serverOffices;
-        this.plugin = serverOffices.getPlugin();
-        this.userLoader = serverOffices.getUserLoader();
-        this.groupLoader = serverOffices.getGroupLoader();
-        this.networkService = serverOffices.getNetworkService();
+    public PlayerPermission(final OfficesServices officesServices) {
+        this.officesServices = officesServices;
+        this.plugin = officesServices.getPlugin();
+        this.userLoader = officesServices.getUserLoader();
+        this.groupLoader = officesServices.getGroupLoader();
+        this.networkService = officesServices.getNetworkService();
     }
 
     public UserData getUser(OfflinePlayer player) {
@@ -66,7 +66,7 @@ public class PlayerPermission {
         //Add group
 
         public void addGroup(final GroupService groupService) {
-            addGroups(serverOffices.getServerName(), false, groupService);
+            addGroups(officesServices.getServerName(), false, groupService);
         }
 
         public void addGroup(final GroupService groupService, final String serverName) {
@@ -80,11 +80,11 @@ public class PlayerPermission {
         //Add groups
 
         public void addGroups(final GroupService... groupServices) {
-            addGroups(serverOffices.getServerName(), false, groupServices);
+            addGroups(officesServices.getServerName(), false, groupServices);
         }
 
         public void addGroups(final List<GroupService> groupServices) {
-            addGroups(groupServices, serverOffices.getServerName(), false);
+            addGroups(groupServices, officesServices.getServerName(), false);
         }
 
         public void addGroups(final String serverName, final GroupService... groupServices) {
@@ -125,11 +125,11 @@ public class PlayerPermission {
         //Remove groups
 
         public void removeGroups(final GroupService... groupServices) {
-            removeGroups(serverOffices.getServerName(), groupServices);
+            removeGroups(officesServices.getServerName(), groupServices);
         }
 
         public void removeGroups(final List<GroupService> groupServices) {
-            removeGroups(groupServices, serverOffices.getServerName());
+            removeGroups(groupServices, officesServices.getServerName());
         }
 
         public void removeGroups(final String serverName, final GroupService... groupServices) {
@@ -211,7 +211,7 @@ public class PlayerPermission {
         //Others
 
         public void load() {
-            if (userLoader.loadIfNotLoaded(uuid, new UserManager(serverOffices, uuid))) {
+            if (userLoader.loadIfNotLoaded(uuid, new UserManager(officesServices, uuid))) {
                 userManager = userLoader.get(uuid);
                 userManager.addGroups(groupLoader.getDefaultGroups());
             }

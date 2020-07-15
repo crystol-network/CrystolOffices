@@ -1,4 +1,4 @@
-package com.walkgs.crystolnetwork.offices.api.base;
+package com.walkgs.crystolnetwork.offices.api.services;
 
 import com.walkgs.crystolnetwork.offices.OfficesPlugin;
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
@@ -11,16 +11,16 @@ import com.walkgs.crystolnetwork.offices.services.UserLoader;
 import com.walkgs.crystolnetwork.offices.utils.CachedCycle;
 import org.bukkit.plugin.Plugin;
 
-public class ServerOffices {
+public class OfficesServices {
 
     //TODO: CYCLE OF USER PERMISSIONS
-    private static final CachedCycle.ICycle<ServerOffices> cycle = new CachedCycle(OfficesPlugin.getPlugin(OfficesPlugin.class)).getOrCreate("Permissions");
+    private static final CachedCycle.ICycle<OfficesServices> cycle = new CachedCycle(OfficesPlugin.getPlugin(OfficesPlugin.class)).getOrCreate("Permissions");
 
-    public static ServerOffices getInstance() {
-        return cycle.getOrComputer(ServerOffices::new);
+    public static OfficesServices getInstance() {
+        return cycle.getOrComputer(OfficesServices::new);
     }
 
-    public static CachedCycle.ICycle<ServerOffices> getCycle() {
+    public static CachedCycle.ICycle<OfficesServices> getCycle() {
         return cycle;
     }
 
@@ -37,7 +37,7 @@ public class ServerOffices {
     private String serverName = "defaultServer";
     private String channelName = "ChannelMessageOf-defaultServer";
 
-    protected ServerOffices() {
+    protected OfficesServices() {
         plugin = OfficesPlugin.getPlugin(OfficesPlugin.class);
         userLoader = new UserLoader(plugin);
         groupLoader = new GroupLoader(plugin);

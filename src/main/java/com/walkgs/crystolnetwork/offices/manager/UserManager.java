@@ -1,6 +1,6 @@
 package com.walkgs.crystolnetwork.offices.manager;
 
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
 import com.walkgs.crystolnetwork.offices.services.GroupService;
 import org.bukkit.OfflinePlayer;
@@ -11,7 +11,7 @@ import java.util.*;
 
 public class UserManager implements Serializable, Cloneable {
 
-    private final ServerOffices serverOffices;
+    private final OfficesServices officesServices;
     private final GroupLoader groupLoader;
     private final Plugin plugin;
     private final UUID uuid;
@@ -23,11 +23,11 @@ public class UserManager implements Serializable, Cloneable {
     private final Map<Integer, GroupService> groups = new LinkedHashMap<>();
     private final Map<String, Object> data = new LinkedHashMap<>();
 
-    public UserManager(final ServerOffices serverOffices, final UUID uuid) {
+    public UserManager(final OfficesServices officesServices, final UUID uuid) {
         this.uuid = uuid;
-        this.serverOffices = serverOffices;
-        this.plugin = serverOffices.getPlugin();
-        this.groupLoader = serverOffices.getGroupLoader();
+        this.officesServices = officesServices;
+        this.plugin = officesServices.getPlugin();
+        this.groupLoader = officesServices.getGroupLoader();
     }
 
     public GroupService getLargestGroup() {
@@ -172,8 +172,8 @@ public class UserManager implements Serializable, Cloneable {
         return plugin.getServer().getOfflinePlayer(uuid);
     }
 
-    public ServerOffices getServerOffices() {
-        return serverOffices;
+    public OfficesServices getOfficesServices() {
+        return officesServices;
     }
 
     public Plugin getPlugin() {

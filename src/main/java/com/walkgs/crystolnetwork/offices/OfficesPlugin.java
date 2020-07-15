@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices;
 
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.job.RedisJob;
 import com.walkgs.crystolnetwork.offices.listeners.InjectListener;
 import com.walkgs.crystolnetwork.offices.listeners.RedisListener;
@@ -14,23 +14,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class OfficesPlugin extends JavaPlugin {
 
-    private ServerOffices serverOffices;
+    private OfficesServices officesServices;
     private NetworkService networkService;
 
     @Override
     public void onEnable() {
 
-        serverOffices = ServerOffices.getInstance();
-        networkService = serverOffices.getNetworkService();
+        officesServices = OfficesServices.getInstance();
+        networkService = officesServices.getNetworkService();
 
-        if (serverOffices.getGroupLoader().loadGroups()) {
+        if (officesServices.getGroupLoader().loadGroups()) {
 
             getServer().getPluginManager().registerEvents(new InjectListener(), this);
             getServer().getPluginManager().registerEvents(new RedisListener(), this);
 
-            final PlayerPermission playerPermission = serverOffices.getPlayerPermission();
+            final PlayerPermission playerPermission = officesServices.getPlayerPermission();
 
-            final RedisJob redisJob = serverOffices.getRedisJob();
+            final RedisJob redisJob = officesServices.getRedisJob();
             redisJob.start();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -39,7 +39,7 @@ public class OfficesPlugin extends JavaPlugin {
                 user.inject();
             }
 
-            final TabService tabService = serverOffices.getTabService();
+            final TabService tabService = officesServices.getTabService();
             tabService.start(this, getServer());
             tabService.execute(new TabService.TabUpdate() {
 

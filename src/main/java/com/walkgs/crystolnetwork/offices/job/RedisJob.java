@@ -1,6 +1,6 @@
 package com.walkgs.crystolnetwork.offices.job;
 
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
@@ -10,19 +10,19 @@ import redis.clients.jedis.JedisPool;
 public class RedisJob extends Thread {
 
     private final NetworkService networkService;
-    private final ServerOffices serverOffices;
+    private final OfficesServices officesServices;
     private final RedisInboud redisInboud;
 
     private final Plugin plugin;
     private final Server server;
 
-    public RedisJob(final ServerOffices serverOffices) {
+    public RedisJob(final OfficesServices officesServices) {
 
-        this.serverOffices = serverOffices;
-        this.networkService = serverOffices.getNetworkService();
-        this.redisInboud = new RedisInboud(serverOffices);
+        this.officesServices = officesServices;
+        this.networkService = officesServices.getNetworkService();
+        this.redisInboud = new RedisInboud(officesServices);
 
-        this.plugin = serverOffices.getPlugin();
+        this.plugin = officesServices.getPlugin();
         this.server = plugin.getServer();
 
     }
@@ -30,7 +30,7 @@ public class RedisJob extends Thread {
     public void run() {
         final JedisPool pool = networkService.getPool();
         try (Jedis jedis = pool.getResource()) {
-            jedis.subscribe(redisInboud, serverOffices.getChannelName());
+            jedis.subscribe(redisInboud, officesServices.getChannelName());
         }
     }
 

@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.inject;
 
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.services.GroupService;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
@@ -12,15 +12,15 @@ public final class CrystolPermissible extends PermissibleBase {
     private final Player player;
 
     private final PlayerPermission playerPermission;
-    private final ServerOffices serverOffices;
+    private final OfficesServices officesServices;
 
     private PermissibleBase oldPermissibleBase;
 
     public CrystolPermissible(Player player) {
         super(player);
         this.player = player;
-        this.serverOffices = ServerOffices.getInstance();
-        this.playerPermission = serverOffices.getPlayerPermission();
+        this.officesServices = OfficesServices.getInstance();
+        this.playerPermission = officesServices.getPlayerPermission();
     }
 
     @Override

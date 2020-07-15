@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.listeners;
 
 import com.google.gson.Gson;
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.events.RedisReceiveMessageEvent;
 import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
@@ -21,12 +21,12 @@ import java.util.UUID;
 public class RedisListener implements Listener {
 
     private final Gson gson = new Gson();
-    private final ServerOffices serverOffices;
+    private final OfficesServices officesServices;
     private final ConsoleCommandSender consoleSender;
 
     {
-        serverOffices = ServerOffices.getInstance();
-        consoleSender = serverOffices.getPlugin().getServer().getConsoleSender();
+        officesServices = OfficesServices.getInstance();
+        consoleSender = officesServices.getPlugin().getServer().getConsoleSender();
     }
 
     @EventHandler
@@ -41,7 +41,7 @@ public class RedisListener implements Listener {
 
                 final UUID uuid = UUID.fromString(messages.get(1));
                 final String eventType = messages.get(2);
-                final UserManager userManager = serverOffices.getUserLoader().get(uuid);
+                final UserManager userManager = officesServices.getUserLoader().get(uuid);
 
                 //addGroups function
                 if (eventType.equals("addGroups")) {
@@ -51,13 +51,13 @@ public class RedisListener implements Listener {
 
                         final boolean normal = updateType.equals("normal");
 
-                        OfflinePlayer offlinePlayer = serverOffices.getPlugin().getServer().getPlayer(uuid);
+                        OfflinePlayer offlinePlayer = officesServices.getPlugin().getServer().getPlayer(uuid);
 
                         final String keySet = "settedOffice";
                         if (!userManager.hasData(keySet))
                             userManager.setData(keySet, new LinkedList<GroupService>());
 
-                        final GroupLoader groupLoader = serverOffices.getGroupLoader();
+                        final GroupLoader groupLoader = officesServices.getGroupLoader();
                         for (Double rank : groupsRanks) {
                             final int groupRank = rank.intValue();
                             final GroupService group = groupLoader.getGroup(groupRank);
@@ -106,7 +106,7 @@ public class RedisListener implements Listener {
                     List<String> groups = gson.fromJson(messages.get(3), List.class);
                     if (groups.size() > 0) {
 
-                        final GroupLoader groupLoader = serverOffices.getGroupLoader();
+                        final GroupLoader groupLoader = officesServices.getGroupLoader();
                         for (String groupName : groups) {
                             final GroupService group = groupLoader.getGroup(groupName);
                             userManager.removeGroup(group);

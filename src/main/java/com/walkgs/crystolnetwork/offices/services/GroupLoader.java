@@ -1,7 +1,7 @@
 package com.walkgs.crystolnetwork.offices.services;
 
 
-import com.walkgs.crystolnetwork.offices.api.base.ServerOffices;
+import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
 import com.walkgs.crystolnetwork.offices.utils.OfficesConfig;
 import com.walkgs.crystolnetwork.offices.utils.OfficesData;
 import org.bukkit.Bukkit;
@@ -19,7 +19,7 @@ public class GroupLoader {
 
     private File file;
     private OfficesConfig config;
-    private ServerOffices serverOffices;
+    private OfficesServices officesServices;
 
 
     public GroupLoader(final Plugin plugin) {
@@ -58,11 +58,11 @@ public class GroupLoader {
         file = new File(plugin.getDataFolder(), "config.yml");
         config = new OfficesConfig(file.toPath());
         config.loadAndSave();
-        serverOffices = ServerOffices.getInstance();
+        officesServices = OfficesServices.getInstance();
 
         groups.clear();
 
-        serverOffices.setServerName(config.getServerName());
+        officesServices.setServerName(config.getServerName());
 
         Map<String, OfficesData> registredGroups = config.getRegistredGroups();
         for (Map.Entry<String, OfficesData> groups : registredGroups.entrySet()) {
