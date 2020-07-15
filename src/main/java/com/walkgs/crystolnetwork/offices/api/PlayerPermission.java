@@ -10,6 +10,7 @@ import com.walkgs.crystolnetwork.offices.job.RedisSender;
 import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
 import com.walkgs.crystolnetwork.offices.services.GroupService;
+import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import com.walkgs.crystolnetwork.offices.services.UserLoader;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ public class PlayerPermission {
 
     private final UserLoader userLoader;
     private final GroupLoader groupLoader;
+    private final NetworkService networkService;
 
     private final ServerOffices serverOffices;
 
@@ -33,6 +35,7 @@ public class PlayerPermission {
         this.plugin = serverOffices.getPlugin();
         this.userLoader = serverOffices.getUserLoader();
         this.groupLoader = serverOffices.getGroupLoader();
+        this.networkService = serverOffices.getNetworkService();
     }
 
     public UserData getUser(OfflinePlayer player) {
@@ -47,15 +50,11 @@ public class PlayerPermission {
 
         private final UUID uuid;
 
-        private final RedisSender redisSender;
-
         private UserManager userManager;
 
         public UserData(final UUID uuid) {
 
             this.uuid = uuid;
-
-            this.redisSender = new RedisSender(serverOffices.getNetworkService());
 
             if (userLoader.hasLoaded(uuid))
                 this.userManager = userLoader.get(uuid);
@@ -101,6 +100,7 @@ public class PlayerPermission {
         }
 
         public void addGroups(final List<GroupService> groupServices, final String serverName, final boolean force) {
+            final RedisSender redisSender = new RedisSender(networkService);
             final List<Integer> groupsRanks = new LinkedList<>();
             for (GroupService groupService : groupServices)
                 groupsRanks.add(groupService.getRank());
@@ -137,6 +137,7 @@ public class PlayerPermission {
         }
 
         public void removeGroups(final List<GroupService> groupServices, final String serverName) {
+            final RedisSender redisSender = new RedisSender(networkService);
             final List<Integer> groupsRanks = new LinkedList<>();
             for (GroupService groupService : groupServices)
                 groupsRanks.add(groupService.getRank());

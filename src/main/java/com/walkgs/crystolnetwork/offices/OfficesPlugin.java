@@ -40,7 +40,7 @@ public class OfficesPlugin extends JavaPlugin {
             }
 
             final TabService tabService = serverOffices.getTabService();
-            //tabService.start(this, getServer());
+            tabService.start(this, getServer());
             tabService.execute(new TabService.TabUpdate() {
 
                 @Override

@@ -21,9 +21,9 @@ public final class RedisInboud extends JedisPubSub {
     public void onMessage(String channel, String message) {
 
         if (channel.equals(serverOffices.getChannelName())) {
-            final RedisMessageEvent event = new RedisMessageEvent(serverOffices.getServerName(), message).call();
+            final RedisMessageEvent event = new RedisMessageEvent(serverOffices.getServerName().replaceFirst("ChannelMessageOf-", ""), message).call();
             if (!event.isCancelled()) {
-                new RedisReceiveMessageEvent(gson.fromJson(message, Map.class)).call();
+                new RedisReceiveMessageEvent(event.getServerName(), gson.fromJson(message, Map.class)).call();
             }
         }
 

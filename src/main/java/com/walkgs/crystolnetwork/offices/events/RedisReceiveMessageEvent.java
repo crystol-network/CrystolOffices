@@ -8,15 +8,21 @@ import java.util.Map;
 
 public class RedisReceiveMessageEvent extends Event {
 
+    private final String serverName;
     private final Map<Integer, String> receivedData;
 
-    public RedisReceiveMessageEvent(Map<Integer, String> receivedData) {
+    public RedisReceiveMessageEvent(String serverName, Map<Integer, String> receivedData) {
+        this.serverName = serverName;
         this.receivedData = receivedData;
     }
 
     public RedisReceiveMessageEvent call() {
         Bukkit.getPluginManager().callEvent(this);
         return this;
+    }
+
+    public String getServerName() {
+        return serverName;
     }
 
     public Map<Integer, String> getReceivedData() {

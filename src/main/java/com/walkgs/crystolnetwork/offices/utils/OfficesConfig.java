@@ -5,7 +5,7 @@ import de.exlll.configlib.annotation.ElementType;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Comment({
@@ -22,12 +22,11 @@ public final class OfficesConfig extends BukkitYamlConfiguration {
     private String serverName = "ExampleServer";
 
     @ElementType(OfficesData.class)
-    private Map<String, OfficesData> groups = getExistsGroups();
+    private Map<String, OfficesData> groups = new LinkedHashMap();
 
-    private Map<String, OfficesData> getExistsGroups() {
-        Map<String, OfficesData> groups = new HashMap<>();
+    {
         groups.put("example", new OfficesData());
-        return groups;
+        groups.put("example2", new OfficesData(1));
     }
 
     public OfficesConfig(Path path) {

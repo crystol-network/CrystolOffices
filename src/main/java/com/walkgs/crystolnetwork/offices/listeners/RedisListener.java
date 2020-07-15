@@ -9,6 +9,7 @@ import com.walkgs.crystolnetwork.offices.services.GroupService;
 import com.walkgs.crystolnetwork.offices.utils.JsonBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,13 @@ import java.util.UUID;
 public class RedisListener implements Listener {
 
     private final Gson gson = new Gson();
-    private final ServerOffices serverOffices = ServerOffices.getInstance();
+    private final ServerOffices serverOffices;
+    private final ConsoleCommandSender consoleSender;
+
+    {
+        serverOffices = ServerOffices.getInstance();
+        consoleSender = serverOffices.getPlugin().getServer().getConsoleSender();
+    }
 
     @EventHandler
     public void onMessage(final RedisReceiveMessageEvent event) {
@@ -53,37 +60,41 @@ public class RedisListener implements Listener {
                         final GroupLoader groupLoader = serverOffices.getGroupLoader();
                         for (Double rank : groupsRanks) {
                             final int groupRank = rank.intValue();
-
                             final GroupService group = groupLoader.getGroup(groupRank);
-                            if (group != null && !userManager.hasGroup(group.getRank())) {
-                                userManager.addGroup(group);
-                            }
+                            consoleSender.sendMessage("Sended rank: " + groupRank + ":" + rank + " -> " + group.getName());
+                            if (group != null) {
+                                if (!userManager.hasGroup(group.getRank())) {
+                                    userManager.addGroup(group);
+                                    if (normal) {
+                                        if (offlinePlayer != null) {
+                                            if (offlinePlayer.isOnline()) {
 
-                            if (normal) {
-                                if (offlinePlayer != null) {
-                                    if (offlinePlayer.isOnline()) {
+                                                final String groupName = group.getName();
+                                                final Player player = offlinePlayer.getPlayer();
+                                                final String charAt = "" + groupName.charAt(0);
 
-                                        final String groupName = group.getName();
-                                        final Player player = offlinePlayer.getPlayer();
-                                        final String charAt = "" + groupName.charAt(0);
+                                                jsonBuilder.append("§6 * §eFoi adicionado o grupo §6" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§e em sua conta.");
+                                                jsonBuilder.append("\n§6 * §eClique ");
+                                                jsonBuilder.append("§6[AQUI]",
+                                                        "§eComemorar :)" +
+                                                                "\n§7- Irá ser enviado um título para todos que estiver online."
+                                                        , HoverEvent.Action.SHOW_TEXT);
+                                                jsonBuilder.append(" §epara comemorar.");
 
-                                        jsonBuilder.append("§6 * §eFoi adicionado o grupo §6" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "§e em sua conta.");
-                                        jsonBuilder.append("\n§6 * §eClique ");
-                                        jsonBuilder.append("§6[AQUI]",
-                                                "§eComemorar :)" +
-                                                        "\n§7- Irá ser enviado um título para todos que estiver online."
-                                                , HoverEvent.Action.SHOW_TEXT);
-                                        jsonBuilder.append(" §epara comemorar.");
+                                                player.sendMessage("");
+                                                player.spigot().sendMessage(jsonBuilder.build());
+                                                player.sendMessage("");
 
-                                        player.sendMessage("");
-                                        player.spigot().sendMessage(jsonBuilder.build());
-                                        player.sendMessage("");
+                                            } else
+                                                ((List<GroupService>) userManager.getData(keySet)).add(group);
 
+                                        }
                                     }
-
-                                    //((List<GroupService>) userManager.getData(keySet)).add(group);
-
+                                } else {
+                                    consoleSender.sendMessage("§cPlayer " + offlinePlayer.getName() + " already has the " + group.getName() + " group.");
                                 }
+                            } else {
+                                consoleSender.sendMessage("§cGroup rank '" + groupRank + "' sended of " + event.getServerName() + " not found.");
                             }
 
                         }

@@ -32,7 +32,6 @@ public class UserManager implements Serializable, Cloneable {
 
     public GroupService getLargestGroup() {
         if (largestRank == -1) return null;
-        serverOffices.getPlugin().getServer().getConsoleSender().sendMessage("Largest: " + largestRank);
         return groups.get(largestRank);
     }
 
@@ -40,7 +39,7 @@ public class UserManager implements Serializable, Cloneable {
         final int rank = groupService.getRank();
         if (hasGroup(rank)) return false;
         groups.put(rank, groupService);
-        if (largestRank >= rank)
+        if (largestRank == -1 || largestRank >= rank)
             largestRank = rank;
         return true;
     }

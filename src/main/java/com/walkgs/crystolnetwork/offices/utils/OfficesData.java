@@ -17,7 +17,11 @@ public final class OfficesData {
     private List<String> permissions;
 
     public OfficesData() {
-        this(0, "&a", "", true, Arrays.asList("permission.*"));
+        this(0);
+    }
+
+    public OfficesData(final int rank) {
+        this(rank, "&a", "", true, Arrays.asList("permission.*"));
     }
 
     public OfficesData(int rank, String prefix, String suffix, boolean odefault, List<String> permissions) {
