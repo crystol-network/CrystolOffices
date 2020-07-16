@@ -10,28 +10,22 @@ This plugin was created for the services of the `CrystolNetwork` server, it is t
 ```java
 public class Example {
 
-    private final OfficesServices officesServices;
-    private final PlayerPermission playerPermission;
-    private final GroupLoader groupLoader;
-
-    {
-        officesServices = OfficesServices.getInstance();
-        playerPermission = officesServices.getPlayerPermission();
-        groupLoader = officesServices.getGroupLoader();
-    }
+    private final OfficesServices officesServices = Singleton.getOrFill(OfficesServices.class);
+    private final PlayerBase playerBase = officesServices.getPlayerBase();
+    private final GroupLoader groupLoader = officesServices.getGroupLoader();
 
     public void exampleOne(){
 
         final Player examplePlayer = Bukkit.getPlayer("ExamplePlayer");
-        final PlayerPermission.UserData user = playerPermission.getUser(examplePlayer);
+        final PlayerPermission playerPermission = playerBase.getUser(examplePlayer);
 
         //Add group
-        user.addGroup(groupLoader.getGroup("example"));
+        playerPermission.addGroup(groupLoader.getGroup("example"));
 
         //Remove group
-        user.removeGroup(groupLoader.getGroup("example"));
+        playerPermission.removeGroup(groupLoader.getGroup("example"));
 
-        if (user.getLargestGroup().hasPermission("permission.admin")){
+        if (playerPermission.getLargestGroup().hasPermission("permission.admin")){
             examplePlayer.sendMessage("You are Admin.");
         }
 
@@ -48,19 +42,19 @@ public class Example {
 public class Example {
 
     private final OfficesServices officesServices;
-    private final PlayerPermission playerPermission;
+    private final PlayerBase playerBase;
 
     public Example(OfficesServices officesServices){
         this.officesServices = officesServices;
-        playerPermission = new PlayerPermission(officesServices);
+        this.playerBase = officesServices.getPlayerBase();
     }
 
     public void exampleTwo(){
 
         final OfflinePlayer examplePlayer = Bukkit.getOfflinePlayer("Pedrinho");
-        final PlayerPermission.UserData user = playerPermission.getUser(examplePlayer);
+        final PlayerPermission playerPermission = playerBase.getUser(examplePlayer);
 
-        if(user.getLargestGroup().hasPermission("money.view")){
+        if(playerPermission.getLargestGroup().hasPermission("money.view")){
             if (examplePlayer.isOnline()){
                 examplePlayer.getPlayer().sendMessage("You are online and allowed to see other people's money.");
             } else {

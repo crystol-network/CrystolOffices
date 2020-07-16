@@ -6,6 +6,7 @@ import com.walkgs.crystolnetwork.offices.events.RedisReceiveMessageEvent;
 import com.walkgs.crystolnetwork.offices.manager.UserManager;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
 import com.walkgs.crystolnetwork.offices.services.GroupService;
+import com.walkgs.crystolnetwork.offices.services.classlife.Singleton;
 import com.walkgs.crystolnetwork.offices.utils.JsonBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.OfflinePlayer;
@@ -21,13 +22,8 @@ import java.util.UUID;
 public class RedisListener implements Listener {
 
     private final Gson gson = new Gson();
-    private final OfficesServices officesServices;
-    private final ConsoleCommandSender consoleSender;
-
-    {
-        officesServices = OfficesServices.getInstance();
-        consoleSender = officesServices.getPlugin().getServer().getConsoleSender();
-    }
+    private final OfficesServices officesServices = Singleton.getOrFill(OfficesServices.class);
+    private final ConsoleCommandSender consoleSender = officesServices.getPlugin().getServer().getConsoleSender();
 
     @EventHandler
     public void onMessage(final RedisReceiveMessageEvent event) {

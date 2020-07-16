@@ -2,6 +2,7 @@ package com.walkgs.crystolnetwork.offices.services;
 
 
 import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
+import com.walkgs.crystolnetwork.offices.services.classlife.Singleton;
 import com.walkgs.crystolnetwork.offices.utils.OfficesConfig;
 import com.walkgs.crystolnetwork.offices.utils.OfficesData;
 import org.bukkit.Bukkit;
@@ -20,7 +21,6 @@ public class GroupLoader {
     private File file;
     private OfficesConfig config;
     private OfficesServices officesServices;
-
 
     public GroupLoader(final Plugin plugin) {
         this.plugin = plugin;
@@ -55,10 +55,11 @@ public class GroupLoader {
 
     public boolean loadGroups() {
 
+        officesServices = Singleton.getOrFill(OfficesServices.class);
+
         file = new File(plugin.getDataFolder(), "config.yml");
         config = new OfficesConfig(file.toPath());
         config.loadAndSave();
-        officesServices = OfficesServices.getInstance();
 
         groups.clear();
 

@@ -1,28 +1,19 @@
 package com.walkgs.crystolnetwork.offices.api.services;
 
 import com.walkgs.crystolnetwork.offices.OfficesPlugin;
-import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
+import com.walkgs.crystolnetwork.offices.api.PlayerBase;
 import com.walkgs.crystolnetwork.offices.job.RedisJob;
 import com.walkgs.crystolnetwork.offices.security.SecurityService;
 import com.walkgs.crystolnetwork.offices.services.GroupLoader;
 import com.walkgs.crystolnetwork.offices.services.NetworkService;
 import com.walkgs.crystolnetwork.offices.services.TabService;
 import com.walkgs.crystolnetwork.offices.services.UserLoader;
-import com.walkgs.crystolnetwork.offices.utils.CachedCycle;
+import com.walkgs.crystolnetwork.offices.services.classlife.Singleton;
+import com.walkgs.crystolnetwork.offices.services.classlife.annotation.ClassLife;
 import org.bukkit.plugin.Plugin;
 
+@ClassLife()
 public class OfficesServices {
-
-    //TODO: CYCLE OF USER PERMISSIONS
-    private static final CachedCycle.ICycle<OfficesServices> cycle = new CachedCycle(OfficesPlugin.getPlugin(OfficesPlugin.class)).getOrCreate("Permissions");
-
-    public static OfficesServices getInstance() {
-        return cycle.getOrComputer(OfficesServices::new);
-    }
-
-    public static CachedCycle.ICycle<OfficesServices> getCycle() {
-        return cycle;
-    }
 
     //TODO: FUNCTIONS CLASS
 
@@ -32,12 +23,12 @@ public class OfficesServices {
     private final SecurityService securityService;
     private final NetworkService networkService;
     private final RedisJob redisJob;
-    private final PlayerPermission playerPermission;
+    private final PlayerBase playerBase;
 
     private String serverName = "defaultServer";
     private String channelName = "ChannelMessageOf-defaultServer";
 
-    protected OfficesServices() {
+    public OfficesServices() {
         plugin = OfficesPlugin.getPlugin(OfficesPlugin.class);
         userLoader = new UserLoader(plugin);
         groupLoader = new GroupLoader(plugin);
@@ -47,7 +38,7 @@ public class OfficesServices {
         networkService = new NetworkService(securityService.getCredential("redis"));
 
         redisJob = new RedisJob(this);
-        playerPermission = new PlayerPermission(this);
+        playerBase = new PlayerBase(this);
     }
 
     public void setServerName(String serverName) {
@@ -75,13 +66,7 @@ public class OfficesServices {
         return redisJob;
     }
 
-    public PlayerPermission getPlayerPermission() {
-        return playerPermission;
-    }
-
-    public TabService getTabService() {
-        return TabService.getInstance();
-    }
+    public PlayerBase getPlayerBase() { return playerBase; }
 
     public SecurityService getSecurityService() {
         return securityService;
@@ -93,6 +78,10 @@ public class OfficesServices {
 
     public Plugin getPlugin() {
         return plugin;
+    }
+
+    public TabService getTabService() {
+        return Singleton.getOrFill(TabService.class);
     }
 
 }

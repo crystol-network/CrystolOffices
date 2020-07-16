@@ -1,9 +1,10 @@
 package com.walkgs.crystolnetwork.offices.services;
 
-import com.walkgs.crystolnetwork.offices.OfficesPlugin;
+import com.walkgs.crystolnetwork.offices.api.PlayerBase;
 import com.walkgs.crystolnetwork.offices.api.PlayerPermission;
 import com.walkgs.crystolnetwork.offices.api.services.OfficesServices;
-import com.walkgs.crystolnetwork.offices.utils.CachedCycle;
+import com.walkgs.crystolnetwork.offices.services.classlife.Singleton;
+import com.walkgs.crystolnetwork.offices.services.classlife.annotation.ClassLife;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -17,22 +18,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@ClassLife
 public class TabService {
 
-    //TODO: CYCLE OF USER PERMISSIONS
-    private static final CachedCycle.ICycle<TabService> cycle = new CachedCycle(OfficesPlugin.getPlugin(OfficesPlugin.class)).getOrCreate("TabService");
+    public TabService() {
 
-    public static TabService getInstance() {
-        return cycle.getOrComputer(TabService::new);
     }
 
-    public static CachedCycle.ICycle<TabService> getCycle() {
-        return cycle;
-    }
-
-    //TODO: FUNCTIONS CLASS
-
-    private final OfficesServices officesServices = OfficesServices.getInstance();
+    private final OfficesServices officesServices = Singleton.getOrFill(OfficesServices.class);
 
     private final char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
@@ -119,7 +112,7 @@ public class TabService {
     }
 
     public void start(Plugin plugin, Server server) {
-        final PlayerPermission playerPermission = officesServices.getPlayerPermission();
+        final PlayerBase playerBase = officesServices.getPlayerBase();
         server.getScheduler().runTaskTimer(plugin, () -> {
             for (final Player player : Bukkit.getOnlinePlayers()) {
 
@@ -129,7 +122,7 @@ public class TabService {
 
                 for (final Player tabPlayer : Bukkit.getOnlinePlayers()) {
 
-                    final PlayerPermission.UserData user = playerPermission.getUser(tabPlayer);
+                    final PlayerPermission user = playerBase.getUser(tabPlayer);
 
                     //TODO: MAKE TAB FACTORY
 
