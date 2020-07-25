@@ -182,4 +182,9 @@ public class UserData implements Serializable, Cloneable {
     public GroupLoader getGroupLoader() {
         return groupLoader;
     }
+
+    @Override
+    public String toString() {
+        return "{:/" + uuid + "={:/" + groups.values() + ":/}, {:/" + data.values() +":/}:/}";
+    }
 }
