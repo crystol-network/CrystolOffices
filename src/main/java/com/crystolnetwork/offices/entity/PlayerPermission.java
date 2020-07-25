@@ -3,7 +3,7 @@ package com.crystolnetwork.offices.entity;
 import com.crystolnetwork.offices.events.PlayerInjectPermissibleEvent;
 import com.crystolnetwork.offices.events.PlayerUnInjectPermissibleEvent;
 import com.crystolnetwork.offices.manager.Group;
-import com.crystolnetwork.offices.manager.UserData;
+import com.crystolnetwork.offices.manager.UserGroup;
 import com.crystolnetwork.offices.manager.job.jedis.RedisSender;
 import com.crystolnetwork.offices.services.NetworkService;
 import com.crystolnetwork.offices.services.OfficesServices;
@@ -35,7 +35,7 @@ public final class PlayerPermission {
 
     private final Gson gson = new Gson();
 
-    private UserData userData;
+    private UserGroup userData;
 
     public PlayerPermission(final UUID uuid, final OfficesServices officesServices) {
 
@@ -226,7 +226,7 @@ public final class PlayerPermission {
     //Others
 
     public void load() {
-        if (userLoader.loadIfNotLoaded(uuid, new UserData(officesServices, uuid))) {
+        if (userLoader.loadIfNotLoaded(uuid, new UserGroup(officesServices, uuid))) {
             userData = userLoader.get(uuid);
             addSilentGroups(groupLoader.getDefaultGroups());
             try {

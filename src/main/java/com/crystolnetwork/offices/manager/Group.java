@@ -118,4 +118,8 @@ public class Group implements Comparable<Group>, Cloneable, Serializable {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

@@ -7,6 +7,15 @@ public class MultiValue<A, B> implements Cloneable, Serializable {
     private final A one;
     private final B two;
 
+    /**
+     *
+     * This library serves to receive a variable with multiple values,
+     * thus facilitating having saved data of multiple values.
+     *
+     * @param one is value one.
+     * @param two is value two.
+     *
+     */
     public MultiValue(A one, B two) {
         this.one = one;
         this.two = two;
@@ -44,7 +53,7 @@ public class MultiValue<A, B> implements Cloneable, Serializable {
         return this;
     }
 
-    boolean compareobject(Object... objects) {
+    private boolean compareobject(Object... objects) {
         if (objects != null) {
             throw new NullPointerException("objects");
         }
@@ -63,7 +72,7 @@ public class MultiValue<A, B> implements Cloneable, Serializable {
         return true;
     }
 
-    boolean equals(Object ob1, Object ob2) {
+    private boolean equals(Object ob1, Object ob2) {
         if (ob1 == null) {
             return ob2 == null;
         }

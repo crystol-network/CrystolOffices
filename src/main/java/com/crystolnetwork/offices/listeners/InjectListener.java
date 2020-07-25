@@ -27,21 +27,6 @@ public final class InjectListener implements Listener {
         user.load();
         user.inject();
 
-        //Test add group system
-        user.addGroup(officesServices.getGroupLoader().getGroup("example"));
-        user.addGroup(officesServices.getGroupLoader().getGroup("teste"));
-
-    }
-
-    //@EventHandler
-    public final void onQuit(final PlayerQuitEvent event) {
-
-        final Player player = event.getPlayer();
-        final UUID uuid = player.getUniqueId();
-
-        final PlayerPermission user = playerBase.getUser(uuid);
-        user.uninject();
-
     }
 
 }

@@ -3,7 +3,7 @@ package com.crystolnetwork.offices.listeners;
 import com.crystolnetwork.offices.events.RedisReceiveMessageEvent;
 import com.crystolnetwork.offices.interfaces.ClickAction;
 import com.crystolnetwork.offices.manager.Group;
-import com.crystolnetwork.offices.manager.UserData;
+import com.crystolnetwork.offices.manager.UserGroup;
 import com.crystolnetwork.offices.services.OfficesServices;
 import com.crystolnetwork.offices.services.SingletonService;
 import com.crystolnetwork.offices.services.loaders.GroupLoader;
@@ -39,7 +39,7 @@ public final class RedisListener implements Listener {
                 final UUID uuid = UUID.fromString(messages.get(1));
                 final String eventType = messages.get(2);
                 officesServices.getPlayerBase().getUser(uuid).load();
-                final UserData userData = officesServices.getUserLoader().get(uuid);
+                final UserGroup userData = officesServices.getUserLoader().get(uuid);
 
                 //addGroups function
                 boolean updated = false;
@@ -60,7 +60,6 @@ public final class RedisListener implements Listener {
                         for (Double rank : groupsRanks) {
                             final int groupRank = rank.intValue();
                             final Group group = groupLoader.getGroup(groupRank);
-                            consoleSender.sendMessage("Sended rank: " + groupRank + ":" + rank + " -> " + group.getName());
                             if (group != null) {
                                 if (!userData.hasGroup(group.getRank())) {
                                     updated = true;
@@ -89,7 +88,7 @@ public final class RedisListener implements Listener {
                                                                         "\n§aVocê comemorou com todos os jogadores."
                                                                 );
                                                                 ((List<Group>) userData.getData(keySet)).remove(group);
-                                                                new TitleBar(player)
+                                                                new TitleBar()
                                                                         .setTitle("§eUhuuu!! ☺")
                                                                         .setSubtitle("§6‣ §f" + player.getName() + "§e adquiriu o grupo §f[" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "]")
                                                                         .setOptions(3, 5, 10)

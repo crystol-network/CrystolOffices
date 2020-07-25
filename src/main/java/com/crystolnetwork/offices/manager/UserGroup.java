@@ -8,7 +8,7 @@ import org.bukkit.plugin.Plugin;
 import java.io.Serializable;
 import java.util.*;
 
-public class UserData implements Serializable, Cloneable {
+public class UserGroup implements Serializable, Cloneable {
 
     private final OfficesServices officesServices;
     private final GroupLoader groupLoader;
@@ -22,7 +22,7 @@ public class UserData implements Serializable, Cloneable {
     private final Map<Integer, Group> groups = new LinkedHashMap<>();
     private final Map<String, Object> data = new LinkedHashMap<>();
 
-    public UserData(final OfficesServices officesServices, final UUID uuid) {
+    public UserGroup(final OfficesServices officesServices, final UUID uuid) {
         this.uuid = uuid;
         this.officesServices = officesServices;
         this.plugin = officesServices.getPlugin();
