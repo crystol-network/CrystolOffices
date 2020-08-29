@@ -5,9 +5,12 @@ import com.crystolnetwork.offices.annotations.Singleton;
 import com.crystolnetwork.offices.entity.PlayerBase;
 import com.crystolnetwork.offices.manager.job.jedis.RedisJob;
 import com.crystolnetwork.offices.manager.job.mongo.MongoJob;
+import com.crystolnetwork.offices.manager.job.mysql.SQLJob;
 import com.crystolnetwork.offices.security.SecurityService;
 import com.crystolnetwork.offices.services.loaders.GroupLoader;
 import com.crystolnetwork.offices.services.loaders.UserLoader;
+import com.crystolnetwork.offices.services.network.DataConnection;
+import com.crystolnetwork.offices.services.network.data.DataConnectionType;
 import com.crystolnetwork.offices.utils.exceptions.CrystolException;
 import org.bukkit.plugin.Plugin;
 
@@ -26,6 +29,7 @@ public class OfficesServices {
     //Connections
     private final RedisJob redisJob;
     private final MongoJob mongoJob;
+    private final SQLJob sqlJob;
 
     private String serverName = "defaultServer";
     private String channelName = "ChannelMessageOf-defaultServer";
@@ -36,10 +40,10 @@ public class OfficesServices {
         //initialize the services
         securityService = new SecurityService(plugin.getDataFolder());
         NetworkService networkService = null;
-        try{
+        try {
             networkService = new NetworkService(
                     securityService.getCredential("redis"),
-                    securityService.getCredential("mongo")
+                    securityService.getCredential("database")
             );
         } catch (CrystolException e) {
             e.printStackTrace();
@@ -50,7 +54,14 @@ public class OfficesServices {
 
         //Connections
         redisJob = new RedisJob(this);
-        mongoJob = new MongoJob(this);
+        final DataConnection dataConnection = networkService.getDataConnection();
+        if (dataConnection.getConnectionType() == DataConnectionType.MONGODB) {
+            mongoJob = new MongoJob(this);
+            sqlJob = null;
+        } else {
+            sqlJob = new SQLJob(this);
+            mongoJob = null;
+        }
 
         userLoader = new UserLoader(plugin);
         groupLoader = new GroupLoader(plugin);
@@ -85,6 +96,10 @@ public class OfficesServices {
 
     public MongoJob getMongoJob() {
         return mongoJob;
+    }
+
+    public SQLJob getSqlJob() {
+        return sqlJob;
     }
 
     public PlayerBase getPlayerBase() {

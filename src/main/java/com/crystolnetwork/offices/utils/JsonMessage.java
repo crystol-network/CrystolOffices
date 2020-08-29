@@ -11,8 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class JsonMessage
-{
+public class JsonMessage {
     private final Player player;
     private final JsonService jsonService;
     private final ComponentBuilder componentBuilder;

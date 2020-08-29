@@ -8,7 +8,6 @@ import com.crystolnetwork.offices.services.OfficesServices;
 import com.crystolnetwork.offices.services.SingletonService;
 import com.crystolnetwork.offices.services.loaders.GroupLoader;
 import com.crystolnetwork.offices.utils.CommandCreator;
-import com.google.common.base.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -23,25 +22,26 @@ public class OfficesCommands {
     private final GroupLoader groupLoader = officesServices.getGroupLoader();
     private final CommandCreator commandCreator = new CommandCreator();
 
-    public void load(){
+    public void load() {
 
         final String helpMessage =
                 " \n" +
-                "§e           Comandos disponíveis:\n" +
-                " \n" +
-                "§6‣ §egroups ver §b- §epara ver os grupos de uma jogador.\n" +
-                "§6‣ §egroups add §b- §epara adicionar um grupo para um jogador.\n" +
-                "§6‣ §egroups remover §b- §epara remover um grupo de um jogador.\n" +
-                "§6‣ §egroups listar §b- §epara listar os jogadores de um certo grupo.\n" +
-                "§6‣ §egroups tipos §b- §epara listar os grupos existentes.\n" +
-                "§6‣ §egroups ajuda §b- §epara exibir esta mensagem.\n "
-        ;
+                        "§e           Comandos disponíveis:\n" +
+                        " \n" +
+                        "§6‣ §egroups ver §b- §epara ver os grupos de uma jogador.\n" +
+                        "§6‣ §egroups add §b- §epara adicionar um grupo para um jogador.\n" +
+                        "§6‣ §egroups remover §b- §epara remover um grupo de um jogador.\n" +
+                        "§6‣ §egroups listar §b- §epara listar os jogadores de um certo grupo.\n" +
+                        "§6‣ §egroups tipos §b- §epara listar os grupos existentes.\n" +
+                        "§6‣ §egroups ajuda §b- §epara exibir esta mensagem.\n ";
 
         commandCreator
                 .addCommand("office", "offices", "group", "groups", "grupo", "grupos", "cargo", "cargos")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {
@@ -57,7 +57,9 @@ public class OfficesCommands {
                 .addSubCommand("show", "ver")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {
@@ -69,7 +71,7 @@ public class OfficesCommands {
                                     playerPermission.load();
                                     String groupsString = "";
                                     final Iterator<Group> groups = new LinkedList<>(playerPermission.getGroups()).iterator();
-                                    while(groups.hasNext())
+                                    while (groups.hasNext())
                                         groupsString += groups.next().getName() + (groups.hasNext() ? ", " : "");
                                     executor.sendMessage("§eGrupos de §f" + player.getName() + "§e: §f" + groupsString);
                                 }
@@ -83,7 +85,9 @@ public class OfficesCommands {
                 .addSubCommand("add", "adicionar", "set", "setar")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {
@@ -96,7 +100,7 @@ public class OfficesCommands {
                                         final PlayerPermission playerPermission = playerBase.getUser(player);
                                         playerPermission.load();
 
-                                        if (arguments.length > 2){
+                                        if (arguments.length > 2) {
                                             playerPermission.addGroup(group, arguments[2]);
                                             executor.sendMessage("§eGrupo §f" + group.getName() + " §eadicionado para §f" + player.getName() + "§e no servidor §f" + arguments[2] + "§e.");
                                         } else {
@@ -119,7 +123,9 @@ public class OfficesCommands {
                 .addSubCommand("remove", "remover", "unset", "retirar")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {
@@ -132,7 +138,7 @@ public class OfficesCommands {
                                         final PlayerPermission playerPermission = playerBase.getUser(player);
                                         playerPermission.load();
 
-                                        if (arguments.length > 2){
+                                        if (arguments.length > 2) {
                                             playerPermission.removeGroup(group, arguments[2]);
                                             executor.sendMessage("§eGrupo §f" + group.getName() + " §eremovido de §f" + player.getName() + "§e no servidor §f" + arguments[2] + "§e.");
                                         } else {
@@ -155,7 +161,9 @@ public class OfficesCommands {
                 .addSubCommand("list", "listar")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {
@@ -172,17 +180,18 @@ public class OfficesCommands {
                 .addSubCommand("types", "tipos", "groups", "grupos")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {
                         if (executor.hasPermission("crystolnetwork.admin")) {
                             String helpMessage =
-                                " \n" +
-                                "§e           Grupos disponíveis:\n" +
-                                " \n"
-                            ;
-                            for (Group group : groupLoader.getGroups()){
+                                    " \n" +
+                                            "§e           Grupos disponíveis:\n" +
+                                            " \n";
+                            for (Group group : groupLoader.getGroups()) {
                                 helpMessage += "§6‣ §e" + group.getName() + "\n";
                             }
                             executor.sendMessage(helpMessage);
@@ -194,7 +203,9 @@ public class OfficesCommands {
                 .addSubCommand("help", "ajuda", "?")
                 .on(new CommandFunction() {
 
-                    { allowConsole = true; }
+                    {
+                        allowConsole = true;
+                    }
 
                     @Override
                     public void onExecute(CommandSender executor, String command, String subCommand, String[] arguments) {

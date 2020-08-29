@@ -185,6 +185,6 @@ public class UserGroup implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return "{:/" + uuid + "={:/" + groups.values() + ":/}, {:/" + data.values() +":/}:/}";
+        return "{:/" + uuid + "={:/" + groups.values() + ":/}, {:/" + data.values() + ":/}:/}";
     }
 }

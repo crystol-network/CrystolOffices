@@ -21,7 +21,7 @@ public class CommandService implements Listener {
     private final OfficesServices officesServices = SingletonService.getOrFill(OfficesServices.class);
     private final Map<String, Map<String, CommandFunction>> functions = new LinkedHashMap<>();
 
-    public CommandService(){
+    public CommandService() {
         final Plugin plugin = officesServices.getPlugin();
         final PluginManager pluginManager = plugin.getServer().getPluginManager();
         pluginManager.registerEvents(this, plugin);
@@ -57,7 +57,7 @@ public class CommandService implements Listener {
                     if (isConsole && !commandFunction.allowConsole)
                         return false;
                     commandFunction.onExecute(sender, command, "", Arrays.copyOfRange(messages, 1, messages.length));
-                    sucess =  true;
+                    sucess = true;
                 }
                 if (messages.length >= 2) {
                     String subCommand = messages[1].toLowerCase();
@@ -66,7 +66,7 @@ public class CommandService implements Listener {
                         if (isConsole && !subCommandFunction.allowConsole)
                             return false;
                         subCommandFunction.onExecute(sender, command, subCommand, Arrays.copyOfRange(messages, 2, messages.length));
-                        sucess =  true;
+                        sucess = true;
                     }
                 }
                 return sucess;

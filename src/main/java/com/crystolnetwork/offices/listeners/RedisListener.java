@@ -85,7 +85,7 @@ public final class RedisListener implements Listener {
                                                             public void run() {
                                                                 player.sendMessage(
                                                                         Strings.repeat("\n ", 100) +
-                                                                        "\n§aVocê comemorou com todos os jogadores."
+                                                                                "\n§aVocê comemorou com todos os jogadores."
                                                                 );
                                                                 ((List<Group>) userData.getData(keySet)).remove(group);
                                                                 new TitleBar()
@@ -93,7 +93,7 @@ public final class RedisListener implements Listener {
                                                                         .setSubtitle("§6‣ §f" + player.getName() + "§e adquiriu o grupo §f[" + groupName.replaceFirst(charAt, charAt.toUpperCase()) + "]")
                                                                         .setOptions(3, 5, 10)
                                                                         .build()
-                                                                .sendForAll();
+                                                                        .sendForAll();
                                                                 expire = true;
                                                             }
                                                         })
@@ -129,10 +129,10 @@ public final class RedisListener implements Listener {
 
                     }
                 }
-                if (updated){
+                if (updated) {
                     try {
                         officesServices.getPlayerBase().getUser(uuid).pushGroups();
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

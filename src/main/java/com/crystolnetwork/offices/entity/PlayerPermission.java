@@ -1,14 +1,19 @@
 package com.crystolnetwork.offices.entity;
 
+import com.crystolnetwork.offices.common.UserOffices;
 import com.crystolnetwork.offices.events.PlayerInjectPermissibleEvent;
 import com.crystolnetwork.offices.events.PlayerUnInjectPermissibleEvent;
 import com.crystolnetwork.offices.manager.Group;
 import com.crystolnetwork.offices.manager.UserGroup;
 import com.crystolnetwork.offices.manager.job.jedis.RedisSender;
+import com.crystolnetwork.offices.manager.job.mysql.SQLJob;
 import com.crystolnetwork.offices.services.NetworkService;
 import com.crystolnetwork.offices.services.OfficesServices;
+import com.crystolnetwork.offices.services.SingletonService;
 import com.crystolnetwork.offices.services.loaders.GroupLoader;
 import com.crystolnetwork.offices.services.loaders.UserLoader;
+import com.crystolnetwork.offices.services.network.DataConnection;
+import com.crystolnetwork.offices.services.network.data.DataConnectionType;
 import com.crystolnetwork.offices.utils.exceptions.CrystolException;
 import com.crystolnetwork.offices.utils.inject.CrystolPermissible;
 import com.crystolnetwork.offices.utils.inject.PermissibleInjector;
@@ -16,6 +21,7 @@ import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import dev.king.universal.api.JdbcProvider;
 import org.bson.Document;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -32,6 +38,7 @@ public final class PlayerPermission {
     private final GroupLoader groupLoader;
     private final NetworkService networkService;
     private final OfficesServices officesServices;
+    private final DataConnection dataConnection;
 
     private final Gson gson = new Gson();
 
@@ -46,6 +53,7 @@ public final class PlayerPermission {
         this.userLoader = officesServices.getUserLoader();
         this.groupLoader = officesServices.getGroupLoader();
         this.networkService = officesServices.getNetworkService();
+        this.dataConnection = networkService.getDataConnection();
 
         if (userLoader.hasLoaded(uuid))
             this.userData = userLoader.get(uuid);
@@ -273,35 +281,67 @@ public final class PlayerPermission {
     public void pushGroups() throws CrystolException {
         String groups = "";
         final Iterator<Group> groupsIterator = new LinkedList<>(getGroups()).iterator();
-        while (groupsIterator.hasNext()){
+        while (groupsIterator.hasNext()) {
             groups += groupsIterator.next().getName() + (groupsIterator.hasNext() ? "," : "");
         }
-        try {
-            final MongoCollection<Document> colletion = officesServices.getMongoJob().getColletion();
-            final BasicDBObject document = new BasicDBObject("$set",
-                            new BasicDBObject("uuid", uuid.toString())
+        if (dataConnection.getConnectionType() == DataConnectionType.MONGODB) {
+            try {
+                final MongoCollection<Document> colletion = officesServices.getMongoJob().getColletion();
+                final BasicDBObject document = new BasicDBObject("$set",
+                        new BasicDBObject("uuid", uuid.toString())
                                 .append("offices", groups)
-                    );
-            colletion.updateMany(Filters.eq("uuid", uuid.toString()), document);
-        } catch (Exception e){
-            throw new CrystolException("Failed to save groups.", this.getClass());
+                );
+                colletion.updateMany(Filters.eq("uuid", uuid.toString()), document);
+            } catch (Exception e) {
+                throw new CrystolException("Failed to save groups.", this.getClass());
+            }
+        } else {
+            final SQLJob sqlJob = officesServices.getSqlJob();
+            final JdbcProvider jdbcProvider = sqlJob.getJdbcProvider();
+            final boolean has = jdbcProvider.query(
+                    "select * from " + sqlJob.getDatabase() + " where uuid = ?",
+                    set -> new UserOffices(UUID.fromString(set.getString("uuid")), set.getString("offices")),
+                    uuid.toString()
+            ).isPresent();
+            if (has) {
+                jdbcProvider.update("update " + sqlJob.getDatabase() + " set offices = '" + groups + "' where uuid = '" + uuid.toString() + "'");
+            } else {
+                jdbcProvider.update("insert into " + sqlJob.getDatabase() + "(uuid, offices) values (?, ?)", uuid.toString(), groups);
+            }
         }
     }
 
     public List<Group> pullGroups() throws CrystolException {
         final LinkedList<Group> groups = new LinkedList<>();
         try {
-            final MongoCollection<Document> colletion = officesServices.getMongoJob().getColletion();
-            final Document document = colletion.find(Filters.eq("uuid", uuid.toString())).first();
-            if (document != null){
-                final String[] groupsName = document.getString("offices").split(",");
-                for (String groupName : groupsName){
-                    Group group = groupLoader.getGroup(groupName);
-                    if (group != null)
-                        groups.add(group);
+            if (dataConnection.getConnectionType() == DataConnectionType.MONGODB) {
+                final MongoCollection<Document> colletion = officesServices.getMongoJob().getColletion();
+                final Document document = colletion.find(Filters.eq("uuid", uuid.toString())).first();
+                if (document != null) {
+                    final String[] groupsName = document.getString("offices").split(",");
+                    for (String groupName : groupsName) {
+                        Group group = groupLoader.getGroup(groupName);
+                        if (group != null)
+                            groups.add(group);
+                    }
                 }
+            } else {
+                final SQLJob sqlJob = officesServices.getSqlJob();
+                final JdbcProvider jdbcProvider = sqlJob.getJdbcProvider();
+                jdbcProvider.query(
+                        "select * from " + sqlJob.getDatabase() + " where uuid = ?",
+                        set -> new UserOffices(UUID.fromString(set.getString("uuid")), set.getString("offices")),
+                        uuid.toString()
+                ).ifPresent(result -> {
+                    final String[] groupsName = result.getOffices().split(",");
+                    for (String groupName : groupsName) {
+                        Group group = groupLoader.getGroup(groupName);
+                        if (group != null)
+                            groups.add(group);
+                    }
+                });
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new CrystolException("Failed to load groups.", this.getClass());
         }
         return groups;

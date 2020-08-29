@@ -1,9 +1,11 @@
 package com.crystolnetwork.offices.services;
 
 import com.crystolnetwork.offices.security.SecurityObject;
+import com.crystolnetwork.offices.security.SecurityService;
+import com.crystolnetwork.offices.services.network.DataConnection;
+import com.crystolnetwork.offices.services.network.data.DataConnectionType;
 import com.crystolnetwork.offices.utils.exceptions.CrystolException;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import dev.king.universal.api.JdbcProvider;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
@@ -13,15 +15,15 @@ import java.util.logging.Logger;
 
 public final class NetworkService {
 
-    private final MongoClient mongoPool;
     private final JedisPool jedisPool;
+    private final DataConnection dataConnection = SingletonService.getOrFill(DataConnection.class);
     private final SecurityObject jedisCredentials;
-    private final SecurityObject mongoCredentials;
+    private final SecurityObject databaseCredentials;
 
     public NetworkService(final SecurityObject... credentials) throws CrystolException {
 
         jedisCredentials = credentials[0];
-        mongoCredentials = credentials[1];
+        databaseCredentials = credentials[1];
 
         final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         try {
@@ -32,30 +34,28 @@ public final class NetworkService {
                     Protocol.DEFAULT_TIMEOUT,
                     jedisCredentials.getPassword()
             );
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new CrystolException("Attempt to connect to 'JEDIS' failed.", NetworkService.class);
         }
 
-        try {
-            this.mongoPool = MongoClients.create(this.mongoCredentials.getUri());
-        } catch (Exception exception) {
-            throw new CrystolException("Attempt to connect to 'MONGO' failed.", NetworkService.class);
+        if (!dataConnection.build(databaseCredentials)) {
+            throw new CrystolException("Attempt to connect to '" + databaseCredentials.getType() + "' failed.", NetworkService.class);
         }
 
         Logger.getLogger("org.mongodb.driver").setLevel(Level.WARNING);
 
     }
 
-    public SecurityObject getMongoCredentials() {
-        return mongoCredentials;
+    public DataConnection getDataConnection() {
+        return dataConnection;
     }
 
     public SecurityObject getJedisCredentials() {
         return jedisCredentials;
     }
 
-    public MongoClient getMongoPool() {
-        return mongoPool;
+    public SecurityObject getDatabaseCredentials() {
+        return databaseCredentials;
     }
 
     public JedisPool getJedisPool() {
@@ -64,10 +64,6 @@ public final class NetworkService {
 
     public void closeJedisPool() {
         jedisPool.close();
-    }
-
-    public void closeMongoPool() {
-        mongoPool.close();
     }
 
 }

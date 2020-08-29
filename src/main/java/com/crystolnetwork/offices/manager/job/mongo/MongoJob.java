@@ -16,10 +16,10 @@ public class MongoJob {
     public MongoJob(OfficesServices officesServices) {
         this.officesServices = officesServices;
         this.networkService = officesServices.getNetworkService();
-        final String[] split = networkService.getMongoCredentials().getUri().split("\\s*[^a-zA-Z]+\\s*");
-        database = networkService.getMongoPool().getDatabase(split[9]);
+        final String[] split = networkService.getDatabaseCredentials().getUri().split("\\s*[^a-zA-Z]+\\s*");
+        database = networkService.getDataConnection().getMongoPool().getDatabase(split[9]);
         System.out.println("Uploaded to mongo database '" + split[9] + "'.");
-        final String colletionName = officesServices.getServerName()+"-Offices";
+        final String colletionName = officesServices.getServerName() + "-Offices";
         MongoCollection<Document> colletion = database.getCollection(colletionName);
         if (colletion == null) {
             database.createCollection(colletionName);

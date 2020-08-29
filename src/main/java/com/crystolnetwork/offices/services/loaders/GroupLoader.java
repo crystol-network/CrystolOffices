@@ -44,7 +44,7 @@ public class GroupLoader {
         return null;
     }
 
-    public List<Group> getGroups(){
+    public List<Group> getGroups() {
         return new LinkedList<>(groups.values());
     }
 

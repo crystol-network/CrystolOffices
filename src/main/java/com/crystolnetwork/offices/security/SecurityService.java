@@ -21,4 +21,8 @@ public final class SecurityService {
         return internalBuffer.getServerName();
     }
 
+    public boolean useMongoDB() {
+        return internalBuffer.useMongoDB();
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.crystolnetwork.offices.utils;
 
 import com.crystolnetwork.offices.utils.reflect.SpigotUtils;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -20,11 +19,9 @@ public class TitleBar {
     private Object timingPacket;
 
     /**
-     *
      * To define a title in the title bar.
      *
      * @param title is the title that will appear on the player's screen.
-     *
      */
     public TitleBar setTitle(final String title) {
         this.title = title;
@@ -32,11 +29,9 @@ public class TitleBar {
     }
 
     /**
-     *
      * To define a subtitle in the title bar.
      *
      * @param subtitle is the subtitle that will appear on the player's screen.
-     *
      */
     public TitleBar setSubtitle(final String subtitle) {
         this.subtitle = subtitle;
@@ -44,13 +39,11 @@ public class TitleBar {
     }
 
     /**
-     *
      * To define the title bar properties.
      *
-     * @param fadeInTime it's time to appear on the player's screen.
-     * @param showTime it's time that will stay on the player's screen.
+     * @param fadeInTime  it's time to appear on the player's screen.
+     * @param showTime    it's time that will stay on the player's screen.
      * @param fadeOutTime it's time to disappear on the player's screen.
-     *
      */
     public TitleBar setOptions(final int fadeInTime, final int showTime, final int fadeOutTime) {
         this.fadeInTime = fadeInTime;
@@ -60,9 +53,7 @@ public class TitleBar {
     }
 
     /**
-     *
      * To create the title bar, doing so will be ready to be sent to the player.
-     *
      */
     public TitleBar build() {
         try {
@@ -72,17 +63,14 @@ public class TitleBar {
             final Object chatsTitle = Objects.requireNonNull(SpigotUtils.getNMSClass("IChatBaseComponent")).getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\": \"" + this.subtitle + "\"}");
             final Constructor<?> timingTitleConstructor = Objects.requireNonNull(SpigotUtils.getNMSClass("PacketPlayOutTitle")).getConstructor(Objects.requireNonNull(SpigotUtils.getNMSClass("PacketPlayOutTitle")).getDeclaredClasses()[0], SpigotUtils.getNMSClass("IChatBaseComponent"), Integer.TYPE, Integer.TYPE, Integer.TYPE);
             this.timingPacket = timingTitleConstructor.newInstance(Objects.requireNonNull(SpigotUtils.getNMSClass("PacketPlayOutTitle")).getDeclaredClasses()[0].getField("SUBTITLE").get(null), chatsTitle, this.fadeInTime, this.showTime, this.fadeOutTime);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return this;
     }
 
     /**
-     *
      * To send the title bar to all players.
-     *
      */
     public void sendForAll() {
         for (final Player player : Bukkit.getOnlinePlayers()) {
@@ -91,11 +79,9 @@ public class TitleBar {
     }
 
     /**
-     *
      * To send the title bar to a player.
      *
      * @param player is the player who will receive the title bar on your screen.
-     *
      */
     public void send(final Player player) {
         SpigotUtils.sendPacket(player, this.packet);
@@ -123,7 +109,9 @@ public class TitleBar {
         return this.fadeOutTime;
     }
 
-    public Object getPacket() { return this.packet; }
+    public Object getPacket() {
+        return this.packet;
+    }
 
     public Object getTimingPacket() {
         return this.timingPacket;

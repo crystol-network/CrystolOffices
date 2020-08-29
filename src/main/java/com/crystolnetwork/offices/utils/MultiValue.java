@@ -8,13 +8,11 @@ public class MultiValue<A, B> implements Cloneable, Serializable {
     private final B two;
 
     /**
-     *
      * This library serves to receive a variable with multiple values,
      * thus facilitating having saved data of multiple values.
      *
      * @param one is value one.
      * @param two is value two.
-     *
      */
     public MultiValue(A one, B two) {
         this.one = one;
